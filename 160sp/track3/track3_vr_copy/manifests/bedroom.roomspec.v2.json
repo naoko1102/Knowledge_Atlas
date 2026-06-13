@@ -1,0 +1,550 @@
+{
+  "room_type": "bedroom",
+  "label": "Bedroom",
+  "version": "2.0",
+
+  "sections": {
+
+    "geometry": [
+      {
+        "key": "room_length_m",
+        "label": "Room Length",
+        "type": "range",
+        "unit": "m",
+        "range": [3.0, 5.5],
+        "step": 0.5,
+        "default": 4.0,
+        "routing": "regeneration",
+        "construct": "perceived spaciousness / privacy enclosure",
+        "rationale": "Bedroom floor area affects the balance between spacious comfort and cosy enclosure. Bedrooms are typically smaller than living rooms; the narrower range reflects residential norms.",
+        "citation": "Evans (2003)",
+        "infinigen_param": null
+      },
+      {
+        "key": "room_width_m",
+        "label": "Room Width",
+        "type": "range",
+        "unit": "m",
+        "range": [2.8, 4.5],
+        "step": 0.5,
+        "default": 3.5,
+        "routing": "regeneration",
+        "construct": "perceived enclosure / furniture placement feasibility",
+        "rationale": "Width constrains furniture layout and, at low values, produces a corridor-like enclosure effect that can increase perceived confinement.",
+        "citation": "Evans (2003); Nasar (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "ceiling_height_m",
+        "label": "Ceiling Height",
+        "type": "range",
+        "unit": "m",
+        "range": [2.0, 3.2],
+        "step": 0.1,
+        "default": 2.6,
+        "routing": "regeneration",
+        "construct": "perceived openness / abstract cognition / cocoon effect",
+        "rationale": "Ceiling height in bedrooms interacts with the dual desire for openness and cosy enclosure. Lower ceilings may increase the restorative cocoon effect for some participants; higher ceilings prime expansive thinking. Default 2.6 m is slightly lower than the living room to reflect typical residential proportions.",
+        "citation": "Meyers-Levy & Zhu (2007); Vartanian et al. (2015)",
+        "infinigen_param": "ceiling_height_m"
+      },
+      {
+        "key": "en_suite_door_present",
+        "label": "En-suite Door Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": false,
+        "routing": "regeneration",
+        "construct": "spatial connectivity / perceived convenience / privacy gradient",
+        "rationale": "An en-suite door changes the spatial narrative of the room (private retreat with attached bathroom vs. standalone bedroom) and alters the wall composition and wayfinding affordances.",
+        "citation": "Gifford (2007)",
+        "infinigen_param": null
+      }
+    ],
+
+    "windows": [
+      {
+        "key": "window_count",
+        "label": "Number of Windows",
+        "type": "integer",
+        "unit": "count",
+        "range": [1, 3],
+        "default": 1,
+        "routing": "regeneration",
+        "construct": "daylight access / morning light / circadian entrainment",
+        "rationale": "Bedroom window count affects morning daylight exposure, a primary circadian zeitgeber. One window is the residential norm; more windows increase circadian-entraining light exposure but may reduce perceived privacy.",
+        "citation": "Münch et al. (2020); Viola et al. (2008)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_glazing_ratio",
+        "label": "Window-to-Wall Ratio",
+        "type": "range",
+        "unit": "ratio",
+        "range": [0.08, 0.25],
+        "step": 0.02,
+        "default": 0.12,
+        "routing": "regeneration",
+        "construct": "daylight factor / morning circadian light dose",
+        "rationale": "Bedroom glazing ratios are typically smaller than living rooms to support sleep privacy. The narrower range (0.08–0.25) reflects residential bedroom norms.",
+        "citation": "Heschong (1999); Münch et al. (2020)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_sill_height_m",
+        "label": "Window Sill Height",
+        "type": "range",
+        "unit": "m",
+        "range": [0.7, 1.2],
+        "step": 0.1,
+        "default": 1.0,
+        "routing": "regeneration",
+        "construct": "privacy / view from bed",
+        "rationale": "Higher sills provide privacy when lying in bed while still admitting daylight. Lower sills allow views while lying down but reduce privacy.",
+        "citation": "Kaplan (1993)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_treatment",
+        "label": "Window Treatment",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["none", "sheer", "curtains", "blackout"],
+        "default": "blackout",
+        "routing": "cached",
+        "construct": "sleep environment quality / light-at-night suppression / morning light control",
+        "rationale": "Blackout curtains are the recommended default for bedrooms because light-at-night suppresses melatonin and disrupts sleep. The option to compare blackout vs. sheer conditions is a direct sleep-hygiene manipulation.",
+        "citation": "Viola et al. (2008); Chang & Chen (2005); Exelmans & Van den Bulck (2015)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_view_type",
+        "label": "Exterior View Type",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["nature_garden", "urban_street", "interior_courtyard", "blank_wall"],
+        "default": "nature_garden",
+        "routing": "cached",
+        "construct": "restorative potential / morning affect",
+        "rationale": "The first visual input after waking influences morning affect and the day's initial stress trajectory. Nature views support restorative waking.",
+        "citation": "Ulrich (1984); Kaplan & Kaplan (1989)",
+        "infinigen_param": null
+      }
+    ],
+
+    "doors": [
+      {
+        "key": "door_count",
+        "label": "Number of Doors",
+        "type": "integer",
+        "unit": "count",
+        "range": [1, 2],
+        "default": 1,
+        "routing": "regeneration",
+        "construct": "privacy gradient / perceived security",
+        "rationale": "Bedrooms are expected to be highly private. A single door is the norm. Two doors (e.g., main entrance + en-suite or wardrobe alcove) introduce spatial complexity and affect perceived privacy.",
+        "citation": "Gifford (2007)",
+        "infinigen_param": null
+      },
+      {
+        "key": "door_style",
+        "label": "Door Style",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["flush", "paneled", "mirrored_wardrobe"],
+        "default": "flush",
+        "routing": "cached",
+        "construct": "formality / perceived spaciousness / self-awareness",
+        "rationale": "Mirrored wardrobe doors are prevalent in residential bedrooms and both increase perceived spatial depth and introduce self-reflection cues. Flush doors recede visually; paneled doors add architectural detail.",
+        "citation": "Stamps (1999); Duval & Wicklund (1972)",
+        "infinigen_param": null
+      }
+    ],
+
+    "lighting": [
+      {
+        "key": "daylight_intensity",
+        "label": "Daylight Intensity",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.05,
+        "default": 0.45,
+        "routing": "live",
+        "construct": "circadian entrainment / sleep-related comfort / morning alertness",
+        "rationale": "Daylight in the bedroom context is primarily relevant to morning exposure (circadian zeitgeber) and daytime rest quality. Default 0.45 is slightly lower than the living room to reflect the bedroom's primarily low-light role.",
+        "citation": "Münch et al. (2020); Viola et al. (2008)",
+        "infinigen_param": "daylight_intensity"
+      },
+      {
+        "key": "artificial_light_intensity",
+        "label": "Artificial Light Intensity",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.05,
+        "default": 0.25,
+        "routing": "live",
+        "construct": "pre-sleep arousal / melatonin suppression",
+        "rationale": "Evening artificial light above ~10 lux suppresses melatonin onset. Lower artificial light intensity is preferred in bedroom contexts to support sleep preparation. Default 0.25 represents dim evening lighting.",
+        "citation": "Chang & Chen (2005); Viola et al. (2008)",
+        "infinigen_param": null
+      },
+      {
+        "key": "light_color_temperature_k",
+        "label": "Light Color Temperature",
+        "type": "range",
+        "unit": "K",
+        "range": [1800, 4000],
+        "step": 100,
+        "default": 2700,
+        "routing": "live",
+        "construct": "melatonin suppression / arousal / sleep hygiene",
+        "rationale": "Cool light (>4000 K, high melanopic content) strongly suppresses melatonin and increases alertness—counterproductive in a bedroom. The range is restricted to 1800–4000 K to model plausible bedroom lighting conditions. Default 2700 K is warm candlelight-equivalent, optimal for pre-sleep environments.",
+        "citation": "Chang & Chen (2005); Viola et al. (2008); Münch et al. (2020)",
+        "infinigen_param": null
+      },
+      {
+        "key": "primary_light_source",
+        "label": "Primary Light Source Type",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["ceiling_overhead", "bedside_lamp", "sconces", "mixed"],
+        "default": "bedside_lamp",
+        "routing": "cached",
+        "construct": "light distribution / perceived intimacy / sleep-environment quality",
+        "rationale": "Bedside lamps provide localised, low-level light suitable for reading without broadly illuminating the room. Overhead light raises the general illumination level and is less appropriate for pre-sleep conditions.",
+        "citation": "Veitch & Newsham (1998)",
+        "infinigen_param": null
+      },
+      {
+        "key": "nightlight_present",
+        "label": "Night Light Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": false,
+        "routing": "cached",
+        "construct": "light-at-night / fear of dark / sleep quality",
+        "rationale": "Nightlights provide orientation and safety during night waking but constitute light-at-night exposure. Their presence is a meaningful sleep-hygiene variable, particularly in studies of children, older adults, or anxiety.",
+        "citation": "Viola et al. (2008)",
+        "infinigen_param": null
+      }
+    ],
+
+    "materials": [
+      {
+        "key": "wall_hue_deg",
+        "label": "Wall Colour Hue",
+        "type": "range",
+        "unit": "degrees",
+        "range": [0, 359],
+        "step": 5,
+        "default": 210,
+        "routing": "live",
+        "construct": "colour valence / arousal / sleep environment quality",
+        "rationale": "Blue-grey tones (around 210°) are associated with lower arousal and are commonly recommended for sleep environments. The full hue range is exposed to allow testing of competing hypotheses (e.g., whether warm bedroom colours increase comfort or arousal).",
+        "citation": "Kaya & Epps (2004); Valdez & Mehrabian (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "wall_saturation",
+        "label": "Wall Colour Saturation",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 0.30],
+        "step": 0.02,
+        "default": 0.06,
+        "routing": "live",
+        "construct": "arousal / visual fatigue in a rest environment",
+        "rationale": "Bedroom saturation range is narrower than living room (cap at 0.30) because high-saturation bedrooms are unusual and would be confounded with deliberate over-stimulation. Default 0.06 is a muted, residential level.",
+        "citation": "Küller et al. (2006)",
+        "infinigen_param": null
+      },
+      {
+        "key": "wall_value",
+        "label": "Wall Colour Lightness",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.50, 0.92],
+        "step": 0.05,
+        "default": 0.80,
+        "routing": "live",
+        "construct": "perceived brightness / cosy enclosure vs. openness",
+        "rationale": "Slightly darker walls (lower value) can increase the cosy, enclosed character of a bedroom. Default 0.80 is lighter than a typical dark accent bedroom but darker than the living room default.",
+        "citation": "Stamps (1999)",
+        "infinigen_param": null
+      },
+      {
+        "key": "floor_material",
+        "label": "Floor Material",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["carpet_soft", "carpet_plush", "hardwood_light", "hardwood_dark", "laminate"],
+        "default": "carpet_soft",
+        "routing": "cached",
+        "construct": "warmth / softness / acoustic comfort / tactile comfort",
+        "rationale": "Carpet is the dominant bedroom floor choice because it provides tactile warmth for bare feet and acoustic softness. Default is soft carpet, which is the most strongly restorative option for a bedroom.",
+        "citation": "Ulrich (1991); Heydarian et al. (2015)",
+        "infinigen_param": null
+      },
+      {
+        "key": "ceiling_material",
+        "label": "Ceiling Material",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["smooth_white", "off_white_textured"],
+        "default": "smooth_white",
+        "routing": "cached",
+        "construct": "perceived height / visual neutrality",
+        "rationale": "Bedroom ceilings are typically plain to minimise visual stimulation and maximise perceived room height. Textured ceilings add low-level visual complexity.",
+        "citation": "Stamps (1999)",
+        "infinigen_param": null
+      }
+    ],
+
+    "furniture": [
+      {
+        "key": "bed_size",
+        "label": "Bed Size",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["single", "double", "queen", "king"],
+        "default": "queen",
+        "routing": "cached",
+        "construct": "perceived luxury / comfort affordance / spaciousness trade-off",
+        "rationale": "Bed size signals the comfort level and social context of the bedroom (solo vs. couples). Larger beds occupy more floor space, reducing perceived spaciousness but increasing perceived luxury and comfort.",
+        "citation": "Ulrich (1991)",
+        "infinigen_param": null
+      },
+      {
+        "key": "bed_size_scale",
+        "label": "Bed Scale Factor",
+        "type": "range",
+        "unit": "scale factor",
+        "range": [0.8, 1.2],
+        "step": 0.05,
+        "default": 1.0,
+        "routing": "cached",
+        "construct": "perceived spaciousness / dominant object scale",
+        "rationale": "A continuous scale factor applied on top of the categorical bed_size, allowing fine-grained manipulation of how the bed dominates the room. Used in the current v1 implementation.",
+        "citation": "Ulrich (1991); Kaplan & Kaplan (1989)",
+        "infinigen_param": "bed_size_scale"
+      },
+      {
+        "key": "mattress_quality_class",
+        "label": "Mattress/Bedding Quality",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["standard", "premium", "luxury"],
+        "default": "standard",
+        "routing": "cached",
+        "construct": "perceived comfort / socioeconomic status cue / restorative affordance",
+        "rationale": "Visible bedding quality communicates the restorative affordance of the bed and the socioeconomic context of the room. Luxury bedding (layered, high-thread-count appearance) is associated with hotel-quality rest environments.",
+        "citation": "Ulrich (1991)",
+        "infinigen_param": null
+      },
+      {
+        "key": "pillow_count",
+        "label": "Pillow Count",
+        "type": "integer",
+        "unit": "count",
+        "range": [1, 4],
+        "default": 2,
+        "routing": "cached",
+        "construct": "softness cue / perceived comfort / occupancy signal",
+        "rationale": "Pillow count is a visible softness cue and signals the number of intended occupants. More pillows are associated with higher perceived comfort and hospitality.",
+        "citation": "Ulrich (1991)",
+        "infinigen_param": "pillow_count"
+      },
+      {
+        "key": "bedding_warmth_tone",
+        "label": "Bedding Colour Tone",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["neutral_white", "warm_earth", "cool_grey_blue", "patterned_colourful"],
+        "default": "neutral_white",
+        "routing": "cached",
+        "construct": "warmth perception / colour valence / visual complexity of dominant object",
+        "rationale": "The bed is the dominant object in a bedroom; its colour tone shapes the overall warmth character of the room independently of wall colour. This allows decoupling of wall hue and bedding hue as experimental variables.",
+        "citation": "Kaya & Epps (2004); Valdez & Mehrabian (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "has_desk",
+        "label": "Desk Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": false,
+        "routing": "cached",
+        "construct": "work intrusion / sleep hygiene / boundary violation",
+        "rationale": "A desk in the bedroom violates the sleep-hygiene principle of stimulus control—the bed should be associated exclusively with sleep. Work reminders in the bedroom are associated with pre-sleep cognitive arousal and impaired sleep onset.",
+        "citation": "Âkerstedt (2006); Steptoe et al. (2008)",
+        "infinigen_param": null
+      },
+      {
+        "key": "has_tv",
+        "label": "Television Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": false,
+        "routing": "cached",
+        "construct": "pre-sleep arousal / stimulus control violation / light-at-night",
+        "rationale": "Bedroom televisions are associated with later sleep onset, shorter sleep duration, and poorer sleep quality. They violate stimulus-control principles and introduce light-at-night. Default is false (recommended sleep hygiene).",
+        "citation": "Exelmans & Van den Bulck (2015); Chang & Chen (2005)",
+        "infinigen_param": "has_tv"
+      },
+      {
+        "key": "furniture_density",
+        "label": "Furniture Density",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.25, 0.75],
+        "step": 0.05,
+        "default": 0.45,
+        "routing": "cached",
+        "construct": "cognitive load / clutter / perceived spaciousness / restfulness",
+        "rationale": "Bedroom furniture density affects perceived spaciousness and restfulness. Unlike the living room, where social density may be desirable, bedroom density is more uniformly linked to clutter-related stress at higher values.",
+        "citation": "Roster & Ferrari (2020); Joye (2007)",
+        "infinigen_param": "furniture_fullness_pct"
+      },
+      {
+        "key": "nightstand_count",
+        "label": "Nightstand Count",
+        "type": "integer",
+        "unit": "count",
+        "range": [0, 2],
+        "default": 1,
+        "routing": "cached",
+        "construct": "occupancy signal / social context / functional affordance",
+        "rationale": "Nightstand count signals single (0–1) versus couples (2) occupancy, which affects perceived social context and may influence social belonging or loneliness judgements in experimental contexts.",
+        "citation": "Hall (1966)",
+        "infinigen_param": null
+      },
+      {
+        "key": "wardrobe_style",
+        "label": "Wardrobe Style",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["none", "built_in_flush", "freestanding_wood", "mirrored_sliding"],
+        "default": "built_in_flush",
+        "routing": "cached",
+        "construct": "visual bulk / perceived spaciousness / self-awareness",
+        "rationale": "Wardrobes are large furniture pieces that dominate the wall composition of a bedroom. Mirrored versions increase perceived depth and introduce self-reflection. Freestanding wooden wardrobes add visual warmth and texture.",
+        "citation": "Stamps (1999); Duval & Wicklund (1972)",
+        "infinigen_param": null
+      },
+      {
+        "key": "clutter_index",
+        "label": "Clutter Level",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.05,
+        "default": 0.15,
+        "routing": "cached",
+        "construct": "cognitive load / pre-sleep stress / sleep inhibition",
+        "rationale": "Bedroom clutter is specifically linked to sleep quality impairment via chronic stress activation and reduced perceived sanctuary quality. Default is lower than the living room to reflect the bedroom's role as a primary restoration space.",
+        "citation": "Saxbe & Repetti (2010); Roster & Ferrari (2020)",
+        "infinigen_param": null
+      }
+    ],
+
+    "plants": [
+      {
+        "key": "plant_count",
+        "label": "Plant Count",
+        "type": "integer",
+        "unit": "count",
+        "range": [0, 3],
+        "default": 0,
+        "routing": "cached",
+        "construct": "biophilic connection / air quality perception / restoration",
+        "rationale": "Biophilic benefit of plants is established (Kaplan, 1995), but bedroom-specific research is more equivocal — some sources caution against CO2 accumulation from many large plants in a closed sleeping space. Default is 0; the variable is included to allow experimental comparison.",
+        "citation": "Ulrich (1984); Kaplan (1995)",
+        "infinigen_param": null
+      },
+      {
+        "key": "plant_size_class",
+        "label": "Plant Size",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["none", "tabletop_small", "floor_medium"],
+        "default": "tabletop_small",
+        "routing": "cached",
+        "construct": "biophilic salience / visual complexity",
+        "rationale": "Bedroom plants are typically smaller than living room plants. Floor-standing plants in a bedroom may feel intrusive or reduce navigable space. Tabletop-small is the most plausible bedroom form.",
+        "citation": "Joye (2007)",
+        "infinigen_param": null
+      },
+      {
+        "key": "plant_species_class",
+        "label": "Plant Species Type",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["succulent_geometric", "tropical_leafy", "flowering"],
+        "default": "succulent_geometric",
+        "routing": "cached",
+        "construct": "organic visual complexity / biophilic character",
+        "rationale": "Succulent geometric forms are the most common bedroom plant choice, require minimal maintenance, and provide low-complexity organic form. Tropical leafy plants provide higher complexity but larger scale.",
+        "citation": "Joye (2007)",
+        "infinigen_param": null
+      }
+    ],
+
+    "decoration": [
+      {
+        "key": "painting_count",
+        "label": "Painting / Art Count",
+        "type": "integer",
+        "unit": "count",
+        "range": [0, 3],
+        "default": 1,
+        "routing": "cached",
+        "construct": "visual complexity / identity signalling / aesthetic preference",
+        "rationale": "Bedroom art is typically more restrained than in living rooms. One to two pieces is the residential norm; more than three begins to feel overstimulating for a rest environment.",
+        "citation": "Gosling et al. (2002); Berlyne (1960)",
+        "infinigen_param": null
+      },
+      {
+        "key": "painting_style",
+        "label": "Painting Style",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["landscape_nature", "abstract_calm", "figurative_portrait", "none"],
+        "default": "landscape_nature",
+        "routing": "cached",
+        "construct": "restorative potential / pre-sleep visual content",
+        "rationale": "Nature landscapes are recommended for bedroom contexts because they support attention restoration and are associated with positive affect on waking. Abstract-calm pieces avoid the social presence introduced by figurative portraits, which may interfere with privacy in a bedroom.",
+        "citation": "Ulrich (1984); Kaplan (1995)",
+        "infinigen_param": null
+      },
+      {
+        "key": "decoration_density",
+        "label": "Decoration Density",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 0.50],
+        "step": 0.05,
+        "default": 0.20,
+        "routing": "cached",
+        "construct": "visual complexity / restfulness / cognitive quiet",
+        "rationale": "Bedroom decoration density is capped lower than the living room (0.50 vs. 1.0) because bedroom environments benefit from visual quiet to support sleep and restoration. High decoration density in a bedroom is specifically associated with stress and sleep disruption.",
+        "citation": "Berlyne (1960); Saxbe & Repetti (2010)",
+        "infinigen_param": null
+      },
+      {
+        "key": "rug_present",
+        "label": "Rug Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": true,
+        "routing": "cached",
+        "construct": "warmth / softness cue / tactile comfort on waking",
+        "rationale": "A rug beside the bed provides a softness and warmth cue for the first physical contact on waking. In combination with floor_material, it decouples the general floor character from the immediate waking tactile experience.",
+        "citation": "Ulrich (1991)",
+        "infinigen_param": null
+      }
+    ]
+
+  }
+}

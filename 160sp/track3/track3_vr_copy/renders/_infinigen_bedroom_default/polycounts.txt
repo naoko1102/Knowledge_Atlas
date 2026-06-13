@@ -1,0 +1,30 @@
+assets: 0
+camera_rigs: 0
+cameras: 0
+Collection: 0
+door_base_elements: 1,178
+door_base_elements.001: 224
+door_base_elements.002: 224
+door_base_elements.003: 224
+door_base_elements.004: 493
+placeholders: 4,556
+placeholders:portal_cutters: 228
+placeholders:room_meshes: 2,564
+placeholders:room_shells: 1,416
+skirting: 24,445
+unique_assets: 3,911,946
+unique_assets:door_casings: 0
+unique_assets:doors: 3,225
+unique_assets:room_ceiling: 172
+unique_assets:room_exterior: 1,018
+unique_assets:room_floor: 226
+unique_assets:room_wall: 1,238
+unique_assets:staircases: 0
+unique_assets:windows: 23,557
+Verts:3,060,018
+Faces:3,936,391
+Tris:6,048,050
+Objects:1/94
+Duration: 00:00+01 (Frame 1/1)
+Memory: 525.4 MiB
+4.2.0

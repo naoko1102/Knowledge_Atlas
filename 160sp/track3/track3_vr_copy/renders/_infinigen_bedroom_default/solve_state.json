@@ -1,0 +1,2661 @@
+{
+    "objs": {
+        "17400_BottleFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "BottleFactory(1234978)",
+            "obj": "BottleFactory(1234978).spawn_asset(642929)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "795913_KitchenCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "-Semantics(room)",
+                "Semantics(bathroom-item)",
+                "Semantics(handheld-item)",
+                "Semantics(food-pantry)",
+                "Semantics(object)",
+                "FromGenerator(BottleFactory)"
+            ]
+        },
+        "186150_CeilingLightFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                -0.0,
+                -0.0,
+                -1.0
+            ],
+            "generator": "CeilingLightFactory(8023300)",
+            "obj": "CeilingLightFactory(8023300).spawn_asset(9443533)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "Subpart(top)",
+                            "-Subpart(back)",
+                            "-Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "Subpart(ceiling)",
+                            "-Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "Semantics(ceiling-light)",
+                "Semantics(single-generator)",
+                "Semantics(object)",
+                "FromGenerator(CeilingLightFactory)",
+                "Semantics(no-children)",
+                "Semantics(lighting)"
+            ]
+        },
+        "223813_StandingSinkFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    0.0,
+                    5.393659828801692e-16,
+                    -2.4976182899649737e-08
+                ],
+                [
+                    0.0,
+                    0.9999999999999996,
+                    2.159521272915297e-08
+                ],
+                [
+                    0.0,
+                    2.159521272915297e-08,
+                    8.881784197001252e-16
+                ]
+            ],
+            "dof_rotation_axis": null,
+            "generator": "StandingSinkFactory(7749007)",
+            "obj": "StandingSinkFactory(7749007).spawn_asset(6636895)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(support)",
+                            "-Subpart(wall)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 3,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0.07,
+                        "parent_tags": [
+                            "-Subpart(ceiling)",
+                            "-Subpart(support)",
+                            "Subpart(wall)",
+                            "Subpart(visible)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "-Semantics(room)",
+                "FromGenerator(StandingSinkFactory)",
+                "Semantics(furniture)",
+                "Semantics(real-placeholder)",
+                "Semantics(object)",
+                "Semantics(sink)"
+            ]
+        },
+        "277471_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(3380486)",
+            "obj": "NatureShelfTrinketsFactory(3380486).spawn_asset(2349794)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "795913_KitchenCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "28031_LargeShelfFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    0.0,
+                    5.393659828801692e-16,
+                    -2.4976182899649737e-08
+                ],
+                [
+                    0.0,
+                    0.9999999999999996,
+                    2.159521272915297e-08
+                ],
+                [
+                    0.0,
+                    2.159521272915297e-08,
+                    8.881784197001252e-16
+                ]
+            ],
+            "dof_rotation_axis": null,
+            "generator": "LargeShelfFactory(6588944)",
+            "obj": "LargeShelfFactory(6588944).spawn_asset(2439775)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(support)",
+                            "-Subpart(wall)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 1,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0.07,
+                        "parent_tags": [
+                            "-Subpart(ceiling)",
+                            "Subpart(visible)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "-Semantics(room)",
+                "Semantics(asset-placeholder-for-children)",
+                "FromGenerator(LargeShelfFactory)",
+                "Semantics(furniture)",
+                "Semantics(storage)",
+                "Semantics(object)"
+            ]
+        },
+        "295617_CeilingLightFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                -0.0,
+                -0.0,
+                -1.0
+            ],
+            "generator": "CeilingLightFactory(8023300)",
+            "obj": "CeilingLightFactory(8023300).spawn_asset(4441166)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "Subpart(top)",
+                            "-Subpart(back)",
+                            "-Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "Subpart(ceiling)",
+                            "-Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "Semantics(ceiling-light)",
+                "Semantics(single-generator)",
+                "Semantics(object)",
+                "FromGenerator(CeilingLightFactory)",
+                "Semantics(no-children)",
+                "Semantics(lighting)"
+            ]
+        },
+        "296567_ToiletFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    0.0,
+                    5.393659828801692e-16,
+                    -2.4976182899649737e-08
+                ],
+                [
+                    0.0,
+                    0.9999999999999996,
+                    2.159521272915297e-08
+                ],
+                [
+                    0.0,
+                    2.159521272915297e-08,
+                    8.881784197001252e-16
+                ]
+            ],
+            "dof_rotation_axis": null,
+            "generator": "ToiletFactory(8987725)",
+            "obj": "ToiletFactory(8987725).spawn_asset(8530096)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(support)",
+                            "-Subpart(wall)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 5,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0.07,
+                        "parent_tags": [
+                            "-Subpart(ceiling)",
+                            "-Subpart(support)",
+                            "Subpart(wall)",
+                            "Subpart(visible)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "-Semantics(room)",
+                "Semantics(furniture)",
+                "Semantics(real-placeholder)",
+                "Semantics(object)",
+                "FromGenerator(ToiletFactory)"
+            ]
+        },
+        "319189_HardwareFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                1.0,
+                -0.0
+            ],
+            "generator": "HardwareFactory(8195830)",
+            "obj": "HardwareFactory(8195830).spawn_asset(7513607)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(object)",
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "FromGenerator(HardwareFactory)"
+            ]
+        },
+        "390672_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(6063423)",
+            "obj": "NatureShelfTrinketsFactory(6063423).spawn_asset(6241011)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "28031_LargeShelfFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "403883_BottleFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "BottleFactory(3304241)",
+            "obj": "BottleFactory(3304241).spawn_asset(2524439)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "90904_SingleCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "-Semantics(room)",
+                "Semantics(bathroom-item)",
+                "Semantics(handheld-item)",
+                "Semantics(food-pantry)",
+                "Semantics(object)",
+                "FromGenerator(BottleFactory)"
+            ]
+        },
+        "416160_BookStackFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "BookStackFactory(339388)",
+            "obj": "BookStackFactory(339388).spawn_asset(3301919)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "795913_KitchenCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "FromGenerator(BookStackFactory)",
+                "Semantics(object)"
+            ]
+        },
+        "4258_PlantContainerFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.9999999999913172,
+                    -2.946662334554156e-06
+                ],
+                [
+                    0.0,
+                    -2.946662334554156e-06,
+                    8.682832230988424e-12
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                2.946662334566949e-06,
+                0.9999999999956586
+            ],
+            "generator": "PlantContainerFactory(4373203)",
+            "obj": "PlantContainerFactory(4373203).spawn_asset(7309012)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 27,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "-Subpart(bottom)",
+                            "-Subpart(back)",
+                            "Subpart(top)",
+                            "-Subpart(front)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "90904_SingleCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(object)",
+                "-Semantics(room)",
+                "FromGenerator(PlantContainerFactory)",
+                "Semantics(real-placeholder)"
+            ]
+        },
+        "502891_CeilingLightFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                -0.0,
+                -0.0,
+                -1.0
+            ],
+            "generator": "CeilingLightFactory(8023300)",
+            "obj": "CeilingLightFactory(8023300).spawn_asset(4971498)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "Subpart(top)",
+                            "-Subpart(back)",
+                            "-Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "Subpart(ceiling)",
+                            "-Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "Semantics(ceiling-light)",
+                "Semantics(single-generator)",
+                "Semantics(object)",
+                "FromGenerator(CeilingLightFactory)",
+                "Semantics(no-children)",
+                "Semantics(lighting)"
+            ]
+        },
+        "562951_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(4671885)",
+            "obj": "NatureShelfTrinketsFactory(4671885).spawn_asset(5393611)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "795913_KitchenCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "599209_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(3589041)",
+            "obj": "NatureShelfTrinketsFactory(3589041).spawn_asset(3661762)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "90904_SingleCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "620004_MirrorFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                1.0,
+                -0.0
+            ],
+            "generator": "MirrorFactory(771983)",
+            "obj": "MirrorFactory(771983).spawn_asset(8150076)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "FromGenerator(MirrorFactory)",
+                "Semantics(real-placeholder)",
+                "Semantics(object)",
+                "Semantics(no-children)",
+                "Semantics(wall-decoration)"
+            ]
+        },
+        "621814_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(429135)",
+            "obj": "NatureShelfTrinketsFactory(429135).spawn_asset(388325)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 3,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "795913_KitchenCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "669124_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(4465449)",
+            "obj": "NatureShelfTrinketsFactory(4465449).spawn_asset(9078827)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 1,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "90904_SingleCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "705355_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(520231)",
+            "obj": "NatureShelfTrinketsFactory(520231).spawn_asset(4758756)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "28031_LargeShelfFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "755568_HardwareFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                -1.0,
+                0.0
+            ],
+            "generator": "HardwareFactory(1485359)",
+            "obj": "HardwareFactory(1485359).spawn_asset(6709517)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 4,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(object)",
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "FromGenerator(HardwareFactory)"
+            ]
+        },
+        "788153_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(4950417)",
+            "obj": "NatureShelfTrinketsFactory(4950417).spawn_asset(8929444)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "90904_SingleCabinetFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "795913_KitchenCabinetFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    0.0,
+                    5.393659828801692e-16,
+                    -2.4976182899649737e-08
+                ],
+                [
+                    0.0,
+                    0.9999999999999996,
+                    2.159521272915297e-08
+                ],
+                [
+                    0.0,
+                    2.159521272915297e-08,
+                    8.881784197001252e-16
+                ]
+            ],
+            "dof_rotation_axis": null,
+            "generator": "KitchenCabinetFactory(8215497)",
+            "obj": "KitchenCabinetFactory(8215497).spawn_asset(6313219)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(support)",
+                            "-Subpart(wall)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 5,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0.07,
+                        "parent_tags": [
+                            "-Subpart(ceiling)",
+                            "Subpart(visible)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "-Semantics(room)",
+                "Semantics(asset-placeholder-for-children)",
+                "Semantics(furniture)",
+                "Semantics(real-placeholder)",
+                "Semantics(storage)",
+                "Semantics(object)",
+                "FromGenerator(KitchenCabinetFactory)"
+            ]
+        },
+        "803428_HardwareFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                1.0,
+                0.0,
+                -0.0
+            ],
+            "generator": "HardwareFactory(5491254)",
+            "obj": "HardwareFactory(5491254).spawn_asset(2784752)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 5,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(object)",
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "FromGenerator(HardwareFactory)"
+            ]
+        },
+        "840187_WallArtFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                -0.0,
+                1.0,
+                -0.0
+            ],
+            "generator": "WallArtFactory(2384108)",
+            "obj": "WallArtFactory(2384108).spawn_asset(8796046)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "FromGenerator(WallArtFactory)",
+                "Semantics(real-placeholder)",
+                "Semantics(object)",
+                "Semantics(no-children)",
+                "Semantics(wall-decoration)"
+            ]
+        },
+        "85096_LargePlantContainerFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    0.9999999999999993,
+                    0.0,
+                    -2.4976182899649737e-08
+                ],
+                [
+                    5.393659828801692e-16,
+                    0.0,
+                    2.159521272915297e-08
+                ],
+                [
+                    -2.4976182899649737e-08,
+                    0.0,
+                    8.881784197001252e-16
+                ]
+            ],
+            "dof_rotation_axis": null,
+            "generator": "LargePlantContainerFactory(205443)",
+            "obj": "LargePlantContainerFactory(205443).spawn_asset(8010171)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(support)",
+                            "-Subpart(wall)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0.07,
+                        "parent_tags": [
+                            "-Subpart(ceiling)",
+                            "Subpart(visible)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(object)",
+                "-Semantics(room)",
+                "FromGenerator(LargePlantContainerFactory)",
+                "Semantics(real-placeholder)"
+            ]
+        },
+        "85902_CeilingLightFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                -0.0,
+                -0.0,
+                -1.0
+            ],
+            "generator": "CeilingLightFactory(8023300)",
+            "obj": "CeilingLightFactory(8023300).spawn_asset(6288971)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "Subpart(top)",
+                            "-Subpart(back)",
+                            "-Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "Subpart(ceiling)",
+                            "-Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "Semantics(ceiling-light)",
+                "Semantics(single-generator)",
+                "Semantics(object)",
+                "FromGenerator(CeilingLightFactory)",
+                "Semantics(no-children)",
+                "Semantics(lighting)"
+            ]
+        },
+        "879907_NatureShelfTrinketsFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "generator": "NatureShelfTrinketsFactory(8720481)",
+            "obj": "NatureShelfTrinketsFactory(8720481).spawn_asset(9187882)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 6,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "28031_LargeShelfFactory",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(office-shelf-item)",
+                "-Semantics(room)",
+                "Semantics(real-placeholder)",
+                "Semantics(handheld-item)",
+                "Semantics(object)",
+                "FromGenerator(NatureShelfTrinketsFactory)"
+            ]
+        },
+        "90904_SingleCabinetFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    0.9999999999999993,
+                    0.0,
+                    -2.4976182899649737e-08
+                ],
+                [
+                    5.393659828801692e-16,
+                    0.0,
+                    2.159521272915297e-08
+                ],
+                [
+                    -2.4976182899649737e-08,
+                    0.0,
+                    8.881784197001252e-16
+                ]
+            ],
+            "dof_rotation_axis": null,
+            "generator": "SingleCabinetFactory(4052789)",
+            "obj": "SingleCabinetFactory(4052789).spawn_asset(5751792)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 0,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "-Subpart(back)",
+                            "Subpart(bottom)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(support)",
+                            "-Subpart(wall)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 4,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0.07,
+                        "parent_tags": [
+                            "-Subpart(ceiling)",
+                            "Subpart(visible)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "-Semantics(room)",
+                "Semantics(asset-placeholder-for-children)",
+                "Semantics(furniture)",
+                "Semantics(real-placeholder)",
+                "Semantics(storage)",
+                "FromGenerator(SingleCabinetFactory)",
+                "Semantics(object)"
+            ]
+        },
+        "945715_HardwareFactory": {
+            "active": true,
+            "dof_matrix_translation": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "dof_rotation_axis": [
+                -0.0,
+                1.0,
+                -0.0
+            ],
+            "generator": "HardwareFactory(8741432)",
+            "obj": "HardwareFactory(8741432).spawn_asset(4534300)",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": 0,
+                    "parent_plane_idx": 2,
+                    "relation": {
+                        "check_z": true,
+                        "child_tags": [
+                            "-Subpart(top)",
+                            "Subpart(back)",
+                            "-Subpart(front)"
+                        ],
+                        "margin": 0,
+                        "parent_tags": [
+                            "Subpart(visible)",
+                            "-Subpart(ceiling)",
+                            "Subpart(wall)",
+                            "-Subpart(support)"
+                        ],
+                        "relation_type": "StableAgainst",
+                        "rev_normal": false
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(object)",
+                "Semantics(no-rotation)",
+                "-Semantics(room)",
+                "FromGenerator(HardwareFactory)"
+            ]
+        },
+        "bathroom_0/0": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "bathroom_0/0.meshed",
+            "polygon": "<not-serialized>",
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "kitchen_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(room)",
+                "SpecificObject(name='bathroom_0/0')",
+                "Semantics(bathroom)"
+            ]
+        },
+        "bedroom_0/0": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "bedroom_0/0.meshed",
+            "polygon": "<not-serialized>",
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "kitchen_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(room)",
+                "Semantics(bedroom)",
+                "SpecificObject(name='bedroom_0/0')"
+            ]
+        },
+        "dining-room_0/0": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "dining-room_0/0.meshed",
+            "polygon": "<not-serialized>",
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "kitchen_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(room)",
+                "SpecificObject(name='dining-room_0/0')",
+                "Semantics(dining-room)"
+            ]
+        },
+        "door": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "door",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(door)",
+                "Semantics(cutter)"
+            ]
+        },
+        "door.001": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "door.001",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(door)",
+                "Semantics(cutter)"
+            ]
+        },
+        "door.002": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "door.002",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "kitchen_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(door)",
+                "Semantics(cutter)"
+            ]
+        },
+        "door.003": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "door.003",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(door)",
+                "Semantics(cutter)"
+            ]
+        },
+        "entrance": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "entrance",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(door)",
+                "Semantics(cutter)"
+            ]
+        },
+        "kitchen_0/0": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "kitchen_0/0.meshed",
+            "polygon": "<not-serialized>",
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "living-room_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(room)",
+                "SpecificObject(name='kitchen_0/0')",
+                "Semantics(kitchen)"
+            ]
+        },
+        "living-room_0/0": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "living-room_0/0.meshed",
+            "polygon": "<not-serialized>",
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Wall"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "kitchen_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                },
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "connector_types": [
+                            "Door"
+                        ],
+                        "relation_type": "RoomNeighbour"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "SpecificObject(name='living-room_0/0')",
+                "Semantics(room)",
+                "Semantics(living-room)"
+            ]
+        },
+        "window": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "kitchen_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.001": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.001",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "kitchen_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.002": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.002",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.003": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.003",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "bathroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.004": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.004",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.005": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.005",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.006": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.006",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "bedroom_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.007": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.007",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.008": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.008",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.009": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.009",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.010": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.010",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.011": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.011",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.012": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.012",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        },
+        "window.013": {
+            "active": true,
+            "dof_matrix_translation": null,
+            "dof_rotation_axis": null,
+            "generator": null,
+            "obj": "window.013",
+            "polygon": null,
+            "relations": [
+                {
+                    "child_plane_idx": null,
+                    "parent_plane_idx": null,
+                    "relation": {
+                        "relation_type": "CutFrom"
+                    },
+                    "target_name": "dining-room_0/0",
+                    "value": null
+                }
+            ],
+            "tags": [
+                "Semantics(window)",
+                "Semantics(cutter)"
+            ]
+        }
+    }
+}

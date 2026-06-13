@@ -1,0 +1,41 @@
+assets: 120,832
+assets:BlenderRockFactory(97264): 120,832
+camera_rigs: 0
+cameras: 0
+Collection: 0
+door_base_elements: 1,178
+door_base_elements.001: 1,177
+door_base_elements.002: 1,181
+door_base_elements.003: 224
+door_base_elements.004: 224
+door_base_elements.005: 224
+door_base_elements.006: 224
+door_base_elements.007: 224
+door_base_elements.008: 493
+door_base_elements.009: 493
+door_base_elements.010: 493
+door_base_elements.011: 493
+door_base_elements.012: 493
+placeholders: 8,264
+placeholders:portal_cutters: 420
+placeholders:room_meshes: 4,668
+placeholders:room_shells: 2,384
+scatters: 0
+skirting: 74,074
+terrain: 672,394
+unique_assets: 12,806,732
+unique_assets:door_casings: 0
+unique_assets:doors: 10,166
+unique_assets:room_ceiling: 285
+unique_assets:room_exterior: 1,810
+unique_assets:room_floor: 443
+unique_assets:room_wall: 2,482
+unique_assets:staircases: 0
+unique_assets:windows: 41,256
+Verts:8,217,982
+Faces:13,306,950
+Tris:16,470,222
+Objects:0/183
+Duration: 00:00+01 (Frame 1/1)
+Memory: 2.1 GiB
+4.2.0

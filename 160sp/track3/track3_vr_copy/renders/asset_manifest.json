@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-10",
+  "note": "Infinigen is an authoring-side asset pipeline only. It is not the student-facing runtime. The web UI must work whether or not assets are present.",
+  "rooms": {
+    "bedroom": {
+      "infinigen_run": {
+        "status": "success",
+        "date": "2026-06-04",
+        "command": "python3 -m infinigen_examples.generate_indoors --output_folder renders/_infinigen_bedroom_default --seed 42 -t coarse populate",
+        "output_blend": "renders/_infinigen_bedroom_default/scene.blend",
+        "blend_size_bytes": 391282688,
+        "blend_blender_version": "4.03",
+        "pipeline_stages_completed": 24,
+        "pipeline_csv": "renders/_infinigen_bedroom_default/pipeline_coarse.csv"
+      },
+      "gltf_export": {
+        "status": "success",
+        "method": "Blender headless parametric extraction with KA_PARAM object cleanup",
+        "source_blend": "renders/_infinigen_bedroom_default/scene.blend",
+        "output": "renders/bedroom_parametric.glb",
+        "size_bytes": 93136,
+        "size_human": "91 KB",
+        "aframe_ready": true,
+        "used_in_viewer": true,
+        "viewer_status": "fixed_loading_and_framing",
+        "viewer_notes": "Loaded from /renders/bedroom_parametric.glb with wrapper centering, camera framing, diagnostics, and procedural fallback for load/timeout/invalid-bounds failures."
+      },
+      "viewer_policy": "load_glb",
+      "fallback_needed": false
+    },
+    "living_room": {
+      "infinigen_run": {
+        "status": "success",
+        "reason": "Living Room regeneration succeeded locally through the separate Infinigen environment. The older default scene.blend path may still contain Git LFS pointer artifacts, but a regenerated source scene now exists locally.",
+        "date": "2026-06-12",
+        "lfs_sha256": "610366e1d097515e30449b938966...",
+        "lfs_pointer_path": "renders/_infinigen_living_room_default/scene.blend",
+        "lfs_pointer_size_bytes": 134,
+        "pipeline_evidence": "renders/_infinigen_living_room_default/pipeline_coarse.csv shows 25 stages completed with 126 objects — generation succeeded in a prior environment",
+        "regenerated_output_blend": "renders/_infinigen_living_room_regen_test/scene.blend",
+        "regenerated_blend_size_human": "about 1.0 GB",
+        "regenerated_output_dir_size_human": "about 6.5 GB"
+      },
+      "gltf_export": {
+        "status": "shell_only",
+        "reason": "A lightweight shell-only export exists, but it is not the complete validated Living Room runtime asset.",
+        "output": "renders/living_room_shell.glb",
+        "size_bytes": 85968,
+        "size_human": "84 KB",
+        "used_in_viewer": false
+      },
+      "viewer_policy": "procedural_fallback",
+      "fallback_needed": true,
+      "fallback_type": "procedural_aframe",
+      "fallback_label": "Procedural preview — Infinigen asset unavailable for this room"
+    }
+  },
+  "tool_availability": {
+    "infinigen": {
+      "installed": true,
+      "path": "/Users/naokoshibuya/Desktop/code/infinigen/venv/bin/python",
+      "note": "The default repo Python cannot import Infinigen, but the separate Infinigen venv can import infinigen and infinigen_examples."
+    },
+    "blender": {
+      "installed": true,
+      "version": "4.3.2",
+      "path": "/Applications/Blender.app/Contents/MacOS/blender",
+      "note": "Available for GLB exports and validation. Current Infinigen exports are mostly static meshes, so direct geometry transforms need careful validation."
+    }
+  },
+  "post_mvp": {
+    "living_room_glb": {
+      "unblock_via_lfs": "git lfs pull --include='renders/_infinigen_living_room_default/scene.blend'",
+      "unblock_via_infinigen": "/Users/naokoshibuya/Desktop/code/infinigen/venv/bin/python infinigen_wrapper.py --room living_room --manifest manifests/living_room.manifest.json --params params/living_room_default.json --out renders/living_room_default.glb",
+      "export_from_blend": "blender -b renders/_infinigen_living_room_regen_test/scene.blend --python-expr \"import bpy; bpy.ops.export_scene.gltf(filepath='renders/living_room_candidate.glb', export_format='GLB', export_apply=True, export_yup=True)\"",
+      "size_budget_bytes": 52428800,
+      "size_budget_human": "50 MB max for browser use",
+      "future_direction": "RoomSpec v2 -> Infinigen/regeneration -> Blender cleanup/export -> A-Frame validation"
+    }
+  }
+}

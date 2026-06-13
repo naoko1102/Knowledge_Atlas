@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ka://manifests/roomspec.v2.schema",
+  "title": "RoomSpec v2 — Parameter Manifest Schema",
+  "description": "Schema for a VR Experiment Studio room parameter manifest. Each room type produces one conforming document.",
+  "version": "2.0",
+
+  "notes": [
+    "v1 exposed 6 flat parameters per room.",
+    "v2 organises parameters into 8 sections: geometry, windows, doors, lighting, materials, furniture, plants, decoration.",
+    "Each parameter carries a routing field that tells the viewer how to apply a change.",
+    "Each parameter carries a construct field mapping it to an environmental-psychology construct.",
+    "infinigen_param is the corresponding Infinigen/home.py source argument where known; null otherwise.",
+    "This schema document is also the authoritative reference for the parameter type vocabulary."
+  ],
+
+  "routing_vocabulary": {
+    "live":         "Handled by shader / light attribute update. No geometry rebuild. No iframe reload.",
+    "cached":       "Requires switching between pre-generated scene variants. Triggers iframe reload.",
+    "regeneration": "Requires a new Infinigen generation run. Not applied in the browser."
+  },
+
+  "type_vocabulary": {
+    "range":       "Continuous numeric value. Fields: range [min, max], step, default (number).",
+    "integer":     "Whole-number count. Fields: range [min, max], default (integer).",
+    "categorical": "One of a fixed option set. Fields: options (string[]), default (string).",
+    "boolean":     "True / false. Fields: default (boolean)."
+  },
+
+  "section_vocabulary": [
+    "geometry",
+    "windows",
+    "doors",
+    "lighting",
+    "materials",
+    "furniture",
+    "plants",
+    "decoration"
+  ],
+
+  "type": "object",
+  "required": ["room_type", "label", "version", "sections"],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "room_type": {
+      "type": "string",
+      "enum": ["living_room", "bedroom"]
+    },
+
+    "label": { "type": "string" },
+    "version": { "type": "string", "const": "2.0" },
+
+    "sections": {
+      "type": "object",
+      "propertyNames": {
+        "enum": ["geometry","windows","doors","lighting","materials","furniture","plants","decoration"]
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/parameter" }
+      }
+    }
+
+  },
+
+  "$defs": {
+
+    "parameter": {
+      "type": "object",
+      "required": ["key", "label", "type", "unit", "default", "routing", "construct", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "key":            { "type": "string", "description": "Snake-case identifier, unique within a room manifest." },
+        "label":          { "type": "string", "description": "Human-readable display label." },
+        "type":           { "type": "string", "enum": ["range", "integer", "categorical", "boolean"] },
+        "unit":           { "type": "string", "description": "Physical unit, 'normalised', 'count', 'category', 'boolean', or 'degrees'." },
+        "range":          { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2,
+                            "description": "Required for type=range and type=integer. [min, max]." },
+        "step":           { "type": "number", "description": "Slider step increment. Required for type=range." },
+        "options":        { "type": "array", "items": { "type": "string" },
+                            "description": "Required for type=categorical." },
+        "default":        { "description": "Default value. Type must match the parameter type." },
+        "routing":        { "type": "string", "enum": ["live", "cached", "regeneration"] },
+        "construct":      { "type": "string", "description": "Environmental-psychology construct(s) this parameter addresses." },
+        "rationale":      { "type": "string", "description": "Why this parameter was included and what manipulation it enables." },
+        "citation":       { "type": "string", "description": "Supporting references (APA short-form)." },
+        "infinigen_param":{ "description": "Corresponding Infinigen/home.py argument name, or null if not yet mapped.", "oneOf": [{"type":"string"},{"type":"null"}] }
+      }
+    }
+
+  }
+}

@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VR Experiment Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
+
+    #hud {
+      position: fixed; top: 16px; left: 16px; z-index: 200;
+      background: rgba(0,0,0,0.68); color: #fff;
+      padding: 12px 34px 14px 18px; border-radius: 10px;
+      font-size: 12px; line-height: 1.75;
+      max-width: 240px; pointer-events: none;
+    }
+    #hud.hud-hidden { display: none; }
+    #hud strong   { display:block; font-size:14px; font-weight:700; margin-bottom:2px; }
+    #hud .row     { display:flex; justify-content:space-between; gap:8px; }
+    #hud .key     { color:#999; white-space:nowrap; }
+    #hud .val     { color:#fff; font-variant-numeric:tabular-nums; text-align:right; }
+    #hud hr       { border:none; border-top:1px solid rgba(255,255,255,0.15); margin:7px 0; }
+    #hud .hint    { color:#666; font-size:11px; margin-top:6px; }
+
+    #hud-close {
+      position: absolute; top: 7px; right: 9px;
+      background: none; border: none;
+      color: rgba(255,255,255,0.4); font-size: 15px;
+      line-height: 1; padding: 2px 5px; cursor: pointer;
+      pointer-events: auto; border-radius: 4px;
+      transition: color 0.12s, background 0.12s;
+    }
+    #hud-close:hover { color: #fff; background: rgba(255,255,255,0.12); }
+
+    /* Shift HUD / pill below the orange banner when it is visible */
+    .hud-banner-offset { top: 48px !important; }
+
+    #hud-pill {
+      position: fixed; top: 16px; left: 16px; z-index: 200;
+      background: rgba(0,0,0,0.62); color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 5px 13px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+      cursor: pointer; pointer-events: auto; display: none;
+      font-family: system-ui, -apple-system, sans-serif;
+      transition: background 0.15s, color 0.15s;
+    }
+    #hud-pill:hover { background: rgba(0,0,0,0.85); color: #fff; }
+
+    #banner {
+      position: fixed; top:0; left:0; right:0; z-index:300;
+      background: #d4742a; color:#fff;
+      font-size:13px; font-weight:500; text-align:center;
+      padding: 7px 16px; display:none;
+    }
+
+    #spinner {
+      position: fixed; inset:0; z-index:100;
+      background: #0b0b0b; color:#bbb;
+      display:flex; align-items:center; justify-content:center;
+      font-size:15px; letter-spacing:0.05em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="banner"></div>
+<div id="spinner">Loading room…</div>
+<div id="hud">
+  <button id="hud-close" onclick="setHudExpanded(false)" title="Collapse">&times;</button>
+  <div id="hud-content"><strong>&hellip;</strong></div>
+</div>
+<button id="hud-pill" onclick="setHudExpanded(true)">&#x24D8; Room Info</button>
+
+<a-scene
+  vr-mode-ui="enabled: true"
+  renderer="antialias: true; colorManagement: true"
+  background="color: #87ceeb">
+
+  <!-- Lights — intensities/colors overwritten by applyParams() on init -->
+  <a-entity id="amb"  light="type:ambient;     color:#ffffff;   intensity:0.4"></a-entity>
+  <a-entity id="sun"  light="type:directional; color:#ffffff;   intensity:0.9; castShadow:false"
+                      position="3 6 2"></a-entity>
+  <a-entity id="hemi" light="type:hemisphere;  color:#87ceeb;   groundColor:#c8a878; intensity:0.5"></a-entity>
+  <!-- Artificial fill light — intensity 0 until applyParams() runs -->
+  <a-entity id="fill" light="type:point; color:#ffffff; intensity:0; distance:8; decay:2"
+                      position="0 2.2 0"></a-entity>
+
+  <!--
+    Camera rig. Position set per-room in JS.
+    A-Frame applies a 1.6 m userHeight offset in non-VR mode,
+    so the rig y stays at 0 (floor level).
+  -->
+  <a-entity id="rig" position="0 0 2.5">
+    <a-camera wasd-controls="acceleration:14" look-controls="pointerLockEnabled:false">
+    </a-camera>
+  </a-entity>
+
+  <!-- Room geometry and furniture injected here by JS -->
+  <a-entity id="room"></a-entity>
+
+</a-scene>
+
+<script>
+(function () {
+'use strict';
+
+// ─────────────────────────────────────────────────────────────────
+// 1.  Parse URL  ?room=bedroom&label=Control&params=<base64json>
+// ─────────────────────────────────────────────────────────────────
+const qs    = new URLSearchParams(window.location.search);
+const ROOM  = (qs.get('room')  || 'bedroom').trim().toLowerCase();
+const LABEL = qs.get('label') || 'Preview';
+
+const DEFAULTS = {
+  bedroom: {
+    ceiling_height_m:            2.7,
+    daylight_intensity:           0.45,
+    wall_warmth_index:            0.6,
+    has_desk:                     false,
+    bed_size_scale:               1.0,
+    pillow_count:                 2,
+    artificial_light_intensity:   0.25,
+    light_color_temperature_k:    2700,
+    window_treatment:             'blackout',
+    window_view_type:             'nature_garden',
+    floor_material:               'carpet_soft',
+    nightlight_present:           false,
+    nightstand_count:             1,
+    clutter_index:                0.15
+  },
+  living_room: {
+    ceiling_height_m:            2.7,
+    daylight_intensity:           0.6,
+    wall_warmth_index:            0.5,
+    furniture_fullness_pct:       0.75,
+    painting_area_per_room_area:  1.5,
+    has_tv:                       true,
+    artificial_light_intensity:   0.35,
+    light_color_temperature_k:    3000,
+    window_treatment:             'sheer',
+    window_view_type:             'nature_garden',
+    floor_material:               'hardwood_light',
+    plant_count:                  1,
+    clutter_index:                0.20
+  }
+};
+
+const BEDROOM_MODEL_URL = '/renders/bedroom_parametric.glb';
+const BEDROOM_MODEL_LABEL = 'Infinigen GLB · bedroom_parametric.glb (91 KB)';
+const DEBUG_BEDROOM_BOUNDS = false;
+const BEDROOM_TARGET_LONGEST_DIMENSION = 8;
+
+// Merge URL-supplied params over defaults
+const P = Object.assign({}, DEFAULTS[ROOM] || DEFAULTS.bedroom);
+try {
+  const raw = qs.get('params');
+  if (raw) Object.assign(P, JSON.parse(atob(raw)));
+} catch (e) { console.warn('viewer: bad params encoding', e); }
+
+
+// ─────────────────────────────────────────────────────────────────
+// 2.  Colour helpers
+// ─────────────────────────────────────────────────────────────────
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function lerp(a, b, t)    { return a + (b - a) * clamp(t, 0, 1); }
+
+function lerpRGB(cold, warm, t) {
+  const r = Math.round(lerp(cold[0], warm[0], t));
+  const g = Math.round(lerp(cold[1], warm[1], t));
+  const b = Math.round(lerp(cold[2], warm[2], t));
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+
+// Sky palette per exterior view type
+const VIEW_SKY = {
+  nature_garden:      { c:[135,195,225], w:[255,195,115] },
+  urban_street:       { c:[145,155,170], w:[185,180,170] },
+  interior_courtyard: { c:[165,158,148], w:[200,188,170] },
+  blank_wall:         { c:[ 90, 88, 85], w:[110, 105, 98] }
+};
+
+// Floor material hex colours
+const FLOOR_COLORS = {
+  hardwood_light: '#c2a87a',
+  hardwood_dark:  '#6b4c33',
+  carpet_neutral: '#8d8070',
+  carpet_warm:    '#a08060',
+  tile_stone:     '#b0b0a8',
+  carpet_soft:    '#b0a090',
+  carpet_plush:   '#9a8878',
+  laminate:       '#c0a870'
+};
+
+// Wall warmth palette
+const PAL_WALL = { c:[176,192,210], w:[228,208,178] };
+
+function wallCol() { return lerpRGB(PAL_WALL.c, PAL_WALL.w, P.wall_warmth_index ?? 0.5); }
+
+function skyCol() {
+  const vt  = P.window_view_type ?? 'nature_garden';
+  const pal = VIEW_SKY[vt] || VIEW_SKY.nature_garden;
+  return lerpRGB(pal.c, pal.w, P.wall_warmth_index ?? 0.5);
+}
+
+// Convert colour temperature (K) to approximate RGB hex.
+// Linear lerp from warm orange (1800 K) to cool blue-white (6500 K).
+function cctToHex(K) {
+  const t = clamp((K - 1800) / (6500 - 1800), 0, 1);
+  return lerpRGB([255, 150, 50], [210, 225, 255], t);
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 3.  DOM / A-Frame entity helpers
+// ─────────────────────────────────────────────────────────────────
+function make(tag, attrs, parent) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs))
+    e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+function addBox(par, x, y, z, w, h, d, color, extra) {
+  return make('a-box',
+    Object.assign({ position:`${x} ${y} ${z}`, width:w, height:h, depth:d, color }, extra || {}),
+    par);
+}
+
+function addPlane(par, {x=0,y=0,z=0, w=1,h=1, rot='0 0 0', color='#ccc'}) {
+  return make('a-plane', {
+    position:`${x} ${y} ${z}`, width:w, height:h,
+    rotation:rot,
+    material:`side:double; color:${color}`
+  }, par);
+}
+
+function addSphere(par, x, y, z, r, color) {
+  return make('a-sphere', { position:`${x} ${y} ${z}`, radius:r, color }, par);
+}
+
+function addCyl(par, x, y, z, r, h, color) {
+  return make('a-cylinder', { position:`${x} ${y} ${z}`, radius:r, height:h, color }, par);
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 4.  Apply params → scene lights and sky.
+//     Called on init and on every live-param postMessage.
+// ─────────────────────────────────────────────────────────────────
+function applyParams() {
+  const di  = clamp(P.daylight_intensity ?? 0.5, 0, 1);
+  const ai  = clamp(P.artificial_light_intensity ?? 0.0, 0, 1);
+  const cct = P.light_color_temperature_k ?? 3000;
+
+  // Window treatment dims effective daylight
+  const TREAT_MUL = {
+    'none':    1.00,
+    'sheer':   0.75,
+    'curtains':0.32,
+    'blinds':  0.42,
+    'blackout':0.06
+  };
+  const edi = di * (TREAT_MUL[P.window_treatment] ?? 1.0);
+
+  const sky      = skyCol();
+  const lightCol = cctToHex(cct);
+
+  document.getElementById('amb').setAttribute('light',
+    `type:ambient; color:#ffffff; intensity:${lerp(0.10, 0.52, edi).toFixed(2)}`);
+
+  document.getElementById('sun').setAttribute('light',
+    `type:directional; color:${lightCol}; intensity:${lerp(0.05, 1.85, edi).toFixed(2)}; castShadow:false`);
+
+  document.getElementById('hemi').setAttribute('light',
+    `type:hemisphere; color:${sky}; groundColor:${wallCol()}; intensity:${lerp(0.12, 0.65, edi).toFixed(2)}`);
+
+  document.querySelector('a-scene').setAttribute('background', `color:${sky}`);
+
+  // Artificial fill light
+  document.getElementById('fill').setAttribute('light',
+    `type:point; color:${lightCol}; intensity:${lerp(0, 1.4, ai).toFixed(2)}; distance:8; decay:2`);
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 5.  Procedural room shell  (walls / floor / ceiling)
+// ─────────────────────────────────────────────────────────────────
+function buildShell(par, W, D) {
+  const ch  = clamp(P.ceiling_height_m ?? 2.7, 2.0, 3.5);
+  const hch = ch / 2;
+  const wc  = wallCol();
+
+  const defaultFlr = ROOM === 'bedroom' ? 'carpet_soft' : 'hardwood_light';
+  const flr = FLOOR_COLORS[P.floor_material] || FLOOR_COLORS[defaultFlr];
+
+  addPlane(par, { x:0,   y:0,   z:0,    w:W, h:D, rot:'-90 0 0',  color:flr });  // floor
+  addPlane(par, { x:0,   y:ch,  z:0,    w:W, h:D, rot:'90 0 0',   color:'#f0eee8' }); // ceiling
+  addPlane(par, { x:0,   y:hch, z:-D/2, w:W, h:ch, rot:'0 0 0',   color:wc }); // back
+  addPlane(par, { x:0,   y:hch, z: D/2, w:W, h:ch, rot:'0 180 0', color:wc }); // front
+  addPlane(par, { x:-W/2,y:hch, z:0,    w:D, h:ch, rot:'0 90 0',  color:wc }); // left
+  addPlane(par, { x: W/2,y:hch, z:0,    w:D, h:ch, rot:'0 -90 0', color:wc }); // right
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 6.  Living room procedural scene
+// ─────────────────────────────────────────────────────────────────
+function buildLivingRoom(par) {
+  const W = 5, D = 6;
+  buildShell(par, W, D);
+
+  const ch    = clamp(P.ceiling_height_m ?? 2.7, 2.0, 3.5);
+  const ff    = clamp(P.furniture_fullness_pct ?? 0.75, 0.6, 0.9);
+  const hasTV = P.has_tv !== false && P.has_tv !== 'false';
+  const pc    = clamp(Math.round(P.plant_count ?? 1), 0, 5);
+  const ci    = clamp(P.clutter_index ?? 0.20, 0, 1);
+  const pa    = P.painting_area_per_room_area ?? 1.5;
+  const treat = P.window_treatment ?? 'sheer';
+  const vt    = P.window_view_type ?? 'nature_garden';
+
+  // ── Windows on back wall ─────────────────────────────────────
+  const BACK_Z    = -D / 2;         // -3.0
+  const WIN_W     = 0.80;
+  const WIN_H     = 1.35;
+  const WIN_CTR_Y = 1.525;
+  const WIN_SILL  = WIN_CTR_Y - WIN_H / 2;  // 0.85
+  const PANE_Z    = BACK_Z + 0.04;  // -2.96
+  const FRAME_Z   = BACK_Z + 0.06;  // -2.94
+  const TREAT_Z   = BACK_Z + 0.09;  // -2.91
+
+  // Sky and ground pane geometry — cover full window height
+  const paneGroundH = WIN_H * 0.45;
+  const paneSkyH    = WIN_H * 0.55;
+  const paneGroundY = WIN_SILL + paneGroundH * 0.5;
+  const paneSkyY    = WIN_SILL + paneGroundH + paneSkyH * 0.5;
+
+  const GROUND_COLORS = {
+    nature_garden:      '#3a7a32',
+    urban_street:       '#707878',
+    interior_courtyard: '#a09080',
+    blank_wall:         '#6a6a6a'
+  };
+  const groundColor = GROUND_COLORS[vt] || '#3a7a32';
+  const skyColor    = skyCol();
+
+  [-1.5, 1.5].forEach(wx => {
+    // Exterior view — sky (upper 55%) and ground (lower 45%)
+    addPlane(par, { x: wx, y: paneSkyY,    z: PANE_Z, w: WIN_W, h: paneSkyH,    rot: '0 0 0', color: skyColor });
+    addPlane(par, { x: wx, y: paneGroundY, z: PANE_Z, w: WIN_W, h: paneGroundH, rot: '0 0 0', color: groundColor });
+
+    // Window frame — 4 border strips + center mullion
+    const fc = '#c4b08c';
+    addBox(par, wx,                     WIN_CTR_Y + WIN_H / 2 + 0.05, FRAME_Z, WIN_W + 0.12, 0.10, 0.07, fc);
+    addBox(par, wx,                     WIN_SILL - 0.05,               FRAME_Z, WIN_W + 0.12, 0.10, 0.07, fc);
+    addBox(par, wx - WIN_W / 2 - 0.05, WIN_CTR_Y,                     FRAME_Z, 0.10, WIN_H + 0.20, 0.07, fc);
+    addBox(par, wx + WIN_W / 2 + 0.05, WIN_CTR_Y,                     FRAME_Z, 0.10, WIN_H + 0.20, 0.07, fc);
+    addBox(par, wx,                     WIN_CTR_Y,                     FRAME_Z, 0.05, WIN_H, 0.05, fc);
+    // Sill ledge (projects ~18 cm into room)
+    addBox(par, wx, WIN_SILL - 0.04, BACK_Z + 0.13, WIN_W + 0.14, 0.06, 0.20, '#d8c8a0');
+
+    // Treatment overlay
+    if (treat === 'sheer') {
+      addPlane(par, { x: wx, y: WIN_CTR_Y, z: TREAT_Z,
+        w: WIN_W + 0.02, h: WIN_H + 0.10, rot: '0 0 0', color: '#d4d5d0' });
+    } else if (treat === 'curtains') {
+      const pw = WIN_W * 0.38;
+      addBox(par, wx - WIN_W * 0.31, WIN_CTR_Y, TREAT_Z, pw, WIN_H + 0.12, 0.05, '#8a7060');
+      addBox(par, wx + WIN_W * 0.31, WIN_CTR_Y, TREAT_Z, pw, WIN_H + 0.12, 0.05, '#8a7060');
+      addBox(par, wx, WIN_CTR_Y + WIN_H / 2 + 0.10, TREAT_Z + 0.01, WIN_W + 0.28, 0.05, 0.05, '#888888');
+    } else if (treat === 'blinds') {
+      for (let i = 0; i < 7; i++) {
+        const sy = WIN_SILL + 0.10 + (WIN_H - 0.14) * i / 6;
+        addBox(par, wx, sy, TREAT_Z, WIN_W - 0.02, 0.05, 0.04, '#c0b8a8');
+      }
+    } else if (treat === 'blackout') {
+      addPlane(par, { x: wx, y: WIN_CTR_Y, z: TREAT_Z,
+        w: WIN_W + 0.06, h: WIN_H + 0.12, rot: '0 0 0', color: '#1c1c1c' });
+    }
+    // treat === 'none': pane + frame visible, no overlay
+  });
+
+  // ── Ceiling pendant (always present) ─────────────────────────
+  addBox(par,    0, ch - 0.06, 0, 0.22, 0.08, 0.22, '#aaaaaa');  // ceiling rose
+  addBox(par,    0, ch - 0.28, 0, 0.04, 0.40, 0.04, '#888888');  // pendant rod
+  addBox(par,    0, ch - 0.58, 0, 0.34, 0.22, 0.34, '#ddd0a0');  // shade
+  addSphere(par, 0, ch - 0.52, 0, 0.07, '#fffde0');               // bulb
+
+  // ── Sofa ─────────────────────────────────────────────────────
+  addBox(par, 0, 0.45, -1.8, 2.2, 0.45, 0.85, '#617898');
+  addBox(par, 0, 0.72, -2.2, 2.2, 0.50, 0.20, '#526688');  // back cushion
+
+  // ── Coffee table ─────────────────────────────────────────────
+  addBox(par, 0, 0.41, -0.80, 1.1, 0.05, 0.60, '#8b6f47');
+  [[-0.46,-0.24],[0.46,-0.24],[-0.46,0.24],[0.46,0.24]].forEach(([lx,lz]) =>
+    addBox(par, lx, 0.20, -0.80+lz, 0.06, 0.40, 0.06, '#7a5f3a'));
+
+  // ── TV stand + screen ─────────────────────────────────────────
+  if (hasTV) {
+    addBox(par, 0, 0.22, -2.82, 1.5, 0.44, 0.40, '#333333');
+    addBox(par, 0, 0.93, -2.82, 1.2, 0.70, 0.07, '#111111');
+  }
+
+  // ── Rug ───────────────────────────────────────────────────────
+  addPlane(par, { x:0, y:0.01, z:-1.3, w:2.5, h:2.0, rot:'-90 0 0', color:'#897355' });
+
+  // ── Furniture density — 5 visible steps across ff=0.60–0.90 ──
+  if (ff >= 0.64) {
+    addBox(par, 1.7, 0.40, -0.65, 0.75, 0.36, 0.75, '#8090a0');  // armchair seat
+    addBox(par, 1.7, 0.68, -0.98, 0.75, 0.52, 0.14, '#7080a0');  // armchair back
+  }
+  if (ff >= 0.68) {
+    addBox(par, -2.3, 0.75, -1.9, 0.4, 1.5, 0.30, '#9a7850');
+    [0.5, 0.9, 1.3].forEach(sy =>
+      addBox(par, -2.3, sy, -1.9, 0.38, 0.04, 0.28, '#c4a070'));
+  }
+  if (ff >= 0.74) {
+    addBox(par, -1.2, 0.22, -0.60, 0.58, 0.28, 0.58, '#8a6858'); // ottoman body
+    addBox(par, -1.2, 0.36, -0.60, 0.52, 0.04, 0.52, '#9a7868'); // ottoman top pad
+  }
+  if (ff >= 0.78) {
+    addBox(par, 1.85, 0.27, -1.5, 0.50, 0.55, 0.50, '#9a8060');
+    addBox(par, 1.85, 0.70, -1.5, 0.08, 0.44, 0.08, '#555555');
+    addSphere(par, 1.85, 1.06, -1.5, 0.13, '#ffffcc');
+  }
+  if (ff >= 0.84) {
+    addBox(par, 1.5, 0.40, 0.80, 0.70, 0.36, 0.70, '#9a8070');   // accent chair seat
+    addBox(par, 1.5, 0.68, 0.52, 0.70, 0.52, 0.14, '#8a7060');   // accent chair back
+  }
+
+  // ── Wall art — 4 levels via painting_area_per_room_area ───────
+  if (pa >= 1.0) {
+    // Landscape print above TV, centre of back wall
+    addBox(par,  0.00, 1.82, -2.96, 1.42, 0.52, 0.05, '#7a6040');
+    addBox(par,  0.00, 1.82, -2.93, 1.28, 0.38, 0.04, '#8a9878');
+  }
+  if (pa >= 1.4) {
+    // Warm portrait on left wall, mid-room
+    addBox(par, -2.46, 1.50, -0.5, 0.05, 0.62, 0.82, '#7a6040');
+    addBox(par, -2.43, 1.50, -0.5, 0.04, 0.50, 0.70, '#c8a870');
+  }
+  if (pa >= 1.8) {
+    // Orange abstract on right wall, mid-room
+    addBox(par,  2.46, 1.50, -0.5, 0.05, 0.66, 0.86, '#6a5030');
+    addBox(par,  2.43, 1.50, -0.5, 0.04, 0.54, 0.74, '#d08048');
+  }
+  if (pa >= 2.2) {
+    // Small cool-tone print on left wall, near back
+    addBox(par, -2.46, 0.85, -2.5, 0.05, 0.42, 0.56, '#5a4820');
+    addBox(par, -2.43, 0.85, -2.5, 0.04, 0.30, 0.44, '#8878c0');
+  }
+
+  // ── Plants ────────────────────────────────────────────────────
+  if (pc >= 1) {
+    addBox(par,   -2.0, 0.18,  1.5, 0.22, 0.36, 0.22, '#7a5a30');
+    addSphere(par,-2.0, 0.62,  1.5, 0.28, '#3d7a3d');
+  }
+  if (pc >= 2) {
+    if (ff >= 0.68) {
+      addBox(par,   -2.3, 1.62, -1.9, 0.14, 0.14, 0.14, '#5a7a30');
+      addSphere(par,-2.3, 1.78, -1.9, 0.10, '#4a8a2a');
+    } else {
+      addBox(par,    2.1, 0.16,  1.6, 0.18, 0.30, 0.18, '#7a5a30');
+      addSphere(par, 2.1, 0.54,  1.6, 0.22, '#2d6a2d');
+    }
+  }
+  if (pc >= 3) {
+    addBox(par,    2.1, 0.16,  1.6, 0.20, 0.32, 0.20, '#7a5a30');
+    addSphere(par, 2.1, 0.56,  1.6, 0.24, '#2d6a2d');
+  }
+  if (pc >= 4) {
+    addBox(par,   -0.9, 0.14, -2.82, 0.18, 0.28, 0.18, '#7a5a30');
+    addSphere(par,-0.9, 0.50, -2.82, 0.20, '#4a7a2a');
+  }
+  if (pc >= 5) {
+    addBox(par,    1.8, 0.14, -2.50, 0.18, 0.28, 0.18, '#5a4020');
+    addSphere(par, 1.8, 0.50, -2.50, 0.22, '#2d6a2d');
+  }
+
+  // ── Clutter — varied shapes across 3 bands ───────────────────
+  if (ci >= 0.20) {
+    addBox(par,    0.25, 0.47, -0.88, 0.14, 0.06, 0.18, '#c0a060');  // book
+    addCyl(par,   -0.22, 0.52, -0.72, 0.06, 0.14, '#9a8860');        // mug (cylinder)
+    addSphere(par,  0.38, 0.48, -0.65, 0.06, '#a06050');             // small decor
+  }
+  if (ci >= 0.45) {
+    addBox(par,    0.50, 0.48, -0.68, 0.08, 0.14, 0.08, '#9a7050');  // vase
+    addBox(par,   -0.30, 0.47, -0.90, 0.18, 0.04, 0.12, '#d0b080');  // magazine
+    addSphere(par,-0.65, 0.18,  0.05, 0.18, '#9a8878');              // floor cushion
+    addBox(par,   -1.00, 0.70, -1.80, 0.14, 0.30, 0.38, '#8890a8'); // throw on sofa arm
+    if (ff >= 0.78) {
+      addCyl(par,  1.85, 0.63, -1.42, 0.06, 0.14, '#9a8070');       // cup on side table
+    }
+  }
+  if (ci >= 0.70) {
+    addBox(par,   -0.50, 0.04, -0.10, 0.22, 0.08, 0.16, '#c0b080'); // floor book
+    addBox(par,    0.80, 0.08,  0.40, 0.22, 0.16, 0.30, '#6a7888'); // bag
+    addBox(par,   -1.50, 0.04,  0.60, 0.30, 0.05, 0.20, '#d0c090'); // magazine stack
+    addSphere(par,-0.30, 0.16,  0.20, 0.14, '#a08898');             // clothes pile
+    addCyl(par,    1.30, 0.06,  0.50, 0.07, 0.14, '#9a9080');       // fallen cup
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 7.  Bedroom procedural scene  (used as GLB fallback too)
+// ─────────────────────────────────────────────────────────────────
+function buildBedroom(par) {
+  const W = 5, D = 6;
+  buildShell(par, W, D);
+
+  const ff    = clamp(P.furniture_fullness_pct ?? 0.72, 0.6, 0.9);
+  const bs    = clamp(P.bed_size_scale ?? 1.0, 0.8, 1.2);
+  const pils  = clamp(Math.round(P.pillow_count ?? 2), 2, 3);
+  const pc    = clamp(Math.round(P.plant_count  ?? 0), 0, 3);
+  const hasTV = P.has_tv === true || P.has_tv === 'true';
+  const ci    = clamp(P.clutter_index ?? 0.15, 0, 1);
+
+  const bW = 1.6 * bs;
+  const bD = 2.1 * bs;
+  const bZ = -1.8;
+
+  // Bed frame
+  addBox(par, 0, 0.13, bZ,           bW+0.12, 0.26, bD+0.12, '#6b4c33');
+  // Headboard
+  addBox(par, 0, 0.50, bZ-bD/2-0.04, bW+0.12, 0.62, 0.13,   '#5a3d24');
+  // Mattress
+  addBox(par, 0, 0.36, bZ,           bW,      0.22, bD,      '#e8ddd0');
+  // Blanket (lower half of bed)
+  addBox(par, 0, 0.50, bZ-bD*0.1,    bW*0.95, 0.10, bD*0.55, '#7a8fa8');
+
+  // Pillows
+  const pilX = pils === 3 ? [-0.44*bs, 0, 0.44*bs] : [-0.32*bs, 0.32*bs];
+  pilX.forEach(px =>
+    addBox(par, px, 0.54, bZ-bD/2+0.22, 0.38, 0.12, 0.28, '#f0eae4'));
+
+  // Nightstand
+  addBox(par, bW/2+0.35, 0.28, bZ, 0.50, 0.55, 0.46, '#6b4c33');
+
+  // Rug
+  addPlane(par, { x:0,y:0.01,z:-1.0, w:2.2,h:1.8, rot:'-90 0 0', color:'#9a8875' });
+
+  // Desk + chair (medium+ density)
+  if (ff >= 0.66) {
+    addBox(par,-1.5,0.73, 0.8, 1.2,0.06,0.6, '#a07850');
+    [[-0.55,0.25],[0.55,0.25],[-0.55,-0.25],[0.55,-0.25]].forEach(([lx,lz]) =>
+      addBox(par,-1.5+lx,0.36,0.8+lz, 0.05,0.72,0.05, '#8b6840'));
+    addBox(par,-1.5,0.45, 1.40, 0.46,0.06,0.46, '#5a7090');   // chair seat
+    addBox(par,-1.5,0.72, 1.16, 0.46,0.50,0.06, '#496080');   // chair back
+  }
+
+  // Television (sleep hygiene variable — default off)
+  if (hasTV) {
+    addBox(par, 0, 0.26,-2.82, 0.70,0.20,0.22, '#222222');  // TV stand
+    addBox(par, 0, 0.60,-2.82, 0.90,0.52,0.07, '#111111');  // TV screen
+  }
+
+  // Plants — bedroom-scale, smaller than living room
+  if (pc >= 1) {
+    // Small tabletop plant near right wall
+    addBox(par, 2.0,0.16, 1.8, 0.16,0.26,0.16, '#7a5a30');
+    addSphere(par, 2.0,0.48, 1.8, 0.18, '#3a7a3a');
+  }
+  if (pc >= 2) {
+    // Tiny succulent on nightstand
+    addBox(par, bW/2+0.35, 0.58, bZ+0.10, 0.10,0.10,0.10, '#6a7a30');
+    addSphere(par, bW/2+0.35, 0.72, bZ+0.10, 0.07, '#5a8a2a');
+  }
+  if (pc >= 3) {
+    // Floor plant in far left corner
+    addBox(par,-2.1,0.14, 1.7, 0.20,0.28,0.20, '#6b4c33');
+    addSphere(par,-2.1,0.50, 1.7, 0.22, '#2d6a2d');
+  }
+
+  // Clutter — deterministic bands
+  if (ci >= 0.20) {
+    // Light: book on nightstand
+    addBox(par, bW/2+0.35, 0.60, bZ+0.08, 0.16,0.04,0.22, '#c0a878');
+  }
+  if (ci >= 0.45) {
+    // Moderate: clothes on floor, papers on desk
+    addBox(par, 0.5,0.04, 0.5, 0.30,0.10,0.18, '#7a6888');  // clothes pile
+    if (ff >= 0.66) {
+      addBox(par,-1.5,0.79, 0.88, 0.28,0.06,0.16, '#d0c090');  // papers on desk
+    }
+  }
+  if (ci >= 0.70) {
+    // Heavy: more floor disorder
+    addBox(par,-0.4,0.04, 0.20, 0.20,0.12,0.14, '#8090a0');  // bag
+    addBox(par, 0.7,0.04,-0.10, 0.18,0.06,0.22, '#c0b080');  // magazine
+    addBox(par,-0.8,0.04, 0.60, 0.14,0.08,0.18, '#9a8070');  // shoes
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 8.  Attempt furniture visibility on the loaded bedroom GLB.
+// ─────────────────────────────────────────────────────────────────
+function applyFurnitureVisibilityToGLB(modelEl) {
+  const ff = P.furniture_fullness_pct ?? 0.72;
+  if (ff >= 0.66) return;
+
+  try {
+    const obj = modelEl.getObject3D('mesh');
+    if (!obj) return;
+    obj.traverse(child => {
+      const name = (child.name || '').toLowerCase();
+      if (name.includes('desk') || name.includes('chair')) {
+        child.visible = false;
+      }
+    });
+  } catch (e) {
+    console.warn('viewer: GLB furniture visibility toggle failed', e);
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 9.  HUD — collapsible overlay
+// ─────────────────────────────────────────────────────────────────
+let assetSource = '';
+let hudExpanded = true;
+
+window.setHudExpanded = function setHudExpanded(expanded) {
+  hudExpanded = expanded;
+  document.getElementById('hud').classList.toggle('hud-hidden', !expanded);
+  document.getElementById('hud-pill').style.display = expanded ? 'none' : 'block';
+};
+
+function updateHUD() {
+  const roomName = ROOM === 'bedroom' ? 'Bedroom' : 'Living Room';
+
+  const rows = Object.entries(P).map(([k, v]) => {
+    const disp = typeof v === 'number' ? v.toFixed(2) : String(v);
+    return `<div class="row"><span class="key">${k}</span><span class="val">${disp}</span></div>`;
+  }).join('');
+
+  document.getElementById('hud-content').innerHTML = `
+    <strong>${roomName}</strong>
+    <div class="row"><span class="key">condition</span><span class="val">${LABEL}</span></div>
+    <div class="row"><span class="key">asset</span><span class="val">${assetSource}</span></div>
+    <hr>
+    ${rows}
+    <p class="hint">W A S D · drag to look</p>
+  `;
+}
+
+function showBanner(msg) {
+  const b = document.getElementById('banner');
+  b.textContent = msg;
+  b.style.display = 'block';
+  document.getElementById('hud').classList.add('hud-banner-offset');
+  document.getElementById('hud-pill').classList.add('hud-banner-offset');
+}
+
+function hideSpinner() {
+  const s = document.getElementById('spinner');
+  if (s) s.remove();
+}
+
+function vecArray(v) {
+  return [v.x, v.y, v.z].map(n => Number(n.toFixed(4)));
+}
+
+function attrVec(el, attr) {
+  const v = el?.getAttribute(attr);
+  return v ? { x: v.x, y: v.y, z: v.z } : null;
+}
+
+function isValidBox(box, size) {
+  const values = [
+    box.min.x, box.min.y, box.min.z,
+    box.max.x, box.max.y, box.max.z,
+    size.x, size.y, size.z
+  ];
+  const maxDim = Math.max(size.x, size.y, size.z);
+  return values.every(Number.isFinite) && maxDim > 0;
+}
+
+function normalizeBedroomPreview(wrapperEl, rawBox, rawSize, rawCenter) {
+  const horizontalMax = Math.max(rawSize.x, rawSize.z);
+  const needsScale = horizontalMax < 6 || horizontalMax > 10;
+  const previewScale = needsScale
+    ? BEDROOM_TARGET_LONGEST_DIMENSION / horizontalMax
+    : 1;
+
+  wrapperEl.setAttribute('scale', `${previewScale} ${previewScale} ${previewScale}`);
+  wrapperEl.setAttribute('position', {
+    x: -rawCenter.x * previewScale,
+    y: -rawBox.min.y * previewScale,
+    z: -rawCenter.z * previewScale
+  });
+
+  return {
+    previewScale,
+    needsScale,
+    wrapperPosition: attrVec(wrapperEl, 'position'),
+    wrapperScale: attrVec(wrapperEl, 'scale')
+  };
+}
+
+function clearBedroomDebugHelpers() {
+  const sceneObj = document.querySelector('a-scene')?.object3D;
+  if (!sceneObj) return;
+  sceneObj.children
+    .filter(child => child.userData?.bedroomBoundsDebug)
+    .forEach(child => sceneObj.remove(child));
+}
+
+function addBedroomDebugHelpers(worldBox, worldCenter) {
+  clearBedroomDebugHelpers();
+  if (!DEBUG_BEDROOM_BOUNDS) return;
+
+  const sceneObj = document.querySelector('a-scene')?.object3D;
+  if (!sceneObj) return;
+
+  const boxHelper = new THREE.Box3Helper(worldBox, 0xff00ff);
+  const axesHelper = new THREE.AxesHelper(1);
+  const marker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.08, 12, 12),
+    new THREE.MeshBasicMaterial({ color: 0x00ffcc })
+  );
+
+  boxHelper.userData.bedroomBoundsDebug = true;
+  axesHelper.userData.bedroomBoundsDebug = true;
+  marker.userData.bedroomBoundsDebug = true;
+  axesHelper.position.copy(worldCenter);
+  marker.position.copy(worldCenter);
+
+  sceneObj.add(boxHelper);
+  sceneObj.add(axesHelper);
+  sceneObj.add(marker);
+}
+
+function logBedroomModelDiagnostics(modelEl, rawBox, rawSize, rawCenter, rawSphere, worldBox, worldSize, worldCenter, previewInfo) {
+  const sceneEl = document.querySelector('a-scene');
+  const camera = sceneEl?.camera;
+  const object3D = modelEl.object3D;
+  const wrapperEl = modelEl.parentElement;
+
+  if (camera) camera.updateMatrixWorld(true);
+
+  console.group('Bedroom model diagnostics');
+  console.log({
+    url: BEDROOM_MODEL_URL,
+    entityPosition: attrVec(modelEl, 'position'),
+    entityRotation: attrVec(modelEl, 'rotation'),
+    entityScale: attrVec(modelEl, 'scale'),
+    wrapperPosition: attrVec(wrapperEl, 'position'),
+    wrapperScale: attrVec(wrapperEl, 'scale'),
+    objectVisible: object3D.visible,
+    rawBounds: {
+      min: vecArray(rawBox.min),
+      max: vecArray(rawBox.max),
+      size: vecArray(rawSize),
+      center: vecArray(rawCenter),
+      sphereRadius: Number(rawSphere.radius.toFixed(4))
+    },
+    worldBounds: {
+      min: vecArray(worldBox.min),
+      max: vecArray(worldBox.max),
+      size: vecArray(worldSize),
+      center: vecArray(worldCenter)
+    },
+    cameraPosition: camera ? vecArray(camera.getWorldPosition(new THREE.Vector3())) : null,
+    cameraDirection: camera ? vecArray(camera.getWorldDirection(new THREE.Vector3())) : null,
+    cameraNear: camera?.near ?? null,
+    cameraFar: camera?.far ?? null,
+    preview: previewInfo
+  });
+
+  let meshCount = 0;
+  object3D.traverse(node => {
+    if (!node.isMesh) return;
+    meshCount += 1;
+
+    if (!node.geometry.boundingBox) {
+      node.geometry.computeBoundingBox();
+    }
+
+    console.log('Bedroom mesh', {
+      name: node.name,
+      visible: node.visible,
+      position: vecArray(node.position),
+      rotation: [
+        node.rotation.x,
+        node.rotation.y,
+        node.rotation.z
+      ].map(n => Number(n.toFixed(4))),
+      scale: vecArray(node.scale),
+      boundingBox: node.geometry.boundingBox
+        ? {
+            min: vecArray(node.geometry.boundingBox.min),
+            max: vecArray(node.geometry.boundingBox.max)
+          }
+        : null,
+      material: Array.isArray(node.material)
+        ? node.material.map(material => material?.name)
+        : node.material?.name
+    });
+  });
+
+  console.log('Bedroom mesh count:', meshCount);
+  console.groupEnd();
+}
+
+function activateBedroomFallback(roomEl, reason, detail) {
+  console.warn('viewer: activating procedural bedroom fallback', {
+    url: BEDROOM_MODEL_URL,
+    reason,
+    detail
+  });
+  const fallbackCopy = {
+    'too-small': [
+      'Procedural fallback (GLB too small for walkthrough scale)',
+      'Procedural preview — bedroom GLB is too small for walkthrough scale'
+    ],
+    'invalid-bounds': [
+      'Procedural fallback (GLB has invalid bounds)',
+      'Procedural preview — bedroom_parametric.glb has invalid bounds'
+    ],
+    'load-failed': [
+      'Procedural fallback (GLB load failed)',
+      'Procedural preview — bedroom_parametric.glb failed to load'
+    ]
+  };
+  const [assetLabel, bannerText] = fallbackCopy[reason] || fallbackCopy['load-failed'];
+  assetSource = assetLabel;
+  showBanner(bannerText);
+  buildBedroom(roomEl);
+  updateHUD();
+  hideSpinner();
+}
+
+function frameLoadedBedroomModel(box, size, center) {
+  const sceneEl = document.querySelector('a-scene');
+  const camera = sceneEl?.camera;
+  const rig = document.getElementById('rig');
+  const cameraEl = rig?.querySelector('a-camera');
+  if (!camera || !rig) return;
+
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const cameraZ = center.z + clamp(size.z * 0.35, 1.8, 3.2);
+  const target = new THREE.Vector3(center.x, clamp(size.y * 0.48, 1.35, 1.7), center.z);
+  const nextPosition = `${center.x.toFixed(3)} 0 ${cameraZ.toFixed(3)}`;
+
+  rig.setAttribute('position', nextPosition);
+  rig.setAttribute('rotation', '0 0 0');
+  if (cameraEl) cameraEl.setAttribute('rotation', '0 0 0');
+  camera.near = 0.05;
+  camera.far = Math.max(100, maxDim * 12);
+  camera.updateProjectionMatrix();
+  camera.updateMatrixWorld(true);
+
+  console.info('viewer: Bedroom camera framed loaded GLB', {
+    url: BEDROOM_MODEL_URL,
+    rigPosition: nextPosition,
+    cameraPosition: vecArray(camera.getWorldPosition(new THREE.Vector3())),
+    cameraDirection: vecArray(camera.getWorldDirection(new THREE.Vector3())),
+    cameraNear: camera.near,
+    cameraFar: camera.far,
+    target: vecArray(target),
+    distanceToTarget: Number(camera.getWorldPosition(new THREE.Vector3()).distanceTo(target).toFixed(4))
+  });
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// 10. Scene initialisation
+// ─────────────────────────────────────────────────────────────────
+function initScene() {
+  applyParams();
+  const roomEl = document.getElementById('room');
+
+  if (ROOM === 'bedroom') {
+    assetSource = 'Infinigen GLB (loading…)';
+    updateHUD();
+    console.info('viewer: Bedroom GLB load started', { url: BEDROOM_MODEL_URL });
+
+    const modelWrapper = make('a-entity', {
+      id:       'bedroom-preview-wrapper',
+      position: '0 0 0',
+      rotation: '0 0 0',
+      scale:    '1 1 1'
+    }, roomEl);
+
+    const model = make('a-gltf-model', {
+      id:       'glb-model',
+      src:      BEDROOM_MODEL_URL,
+      position: '0 0 0',
+      rotation: '0 0 0',
+      scale:    '1 1 1'
+    }, modelWrapper);
+
+    model.addEventListener('model-loaded', () => {
+      model.object3D.updateMatrixWorld(true);
+
+      const rawBox    = new THREE.Box3().setFromObject(model.object3D);
+      const rawSize   = rawBox.getSize(new THREE.Vector3());
+      const rawCenter = rawBox.getCenter(new THREE.Vector3());
+      const rawSphere = rawBox.getBoundingSphere(new THREE.Sphere());
+      const rawMaxDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
+
+      console.info('viewer: Bedroom GLB loaded', {
+        url: BEDROOM_MODEL_URL,
+        rawSize: { x: rawSize.x, y: rawSize.y, z: rawSize.z },
+        rawCenter: { x: rawCenter.x, y: rawCenter.y, z: rawCenter.z },
+        rawMaxDim
+      });
+
+      if (!isValidBox(rawBox, rawSize)) {
+        console.warn('viewer: GLB has invalid or empty bounds — procedural fallback', {
+          url: BEDROOM_MODEL_URL,
+          rawSize: { x: rawSize.x, y: rawSize.y, z: rawSize.z }
+        });
+        modelWrapper.remove();
+        activateBedroomFallback(roomEl, 'invalid-bounds', {
+          rawBounds: {
+            min: vecArray(rawBox.min),
+            max: vecArray(rawBox.max),
+            size: vecArray(rawSize)
+          }
+        });
+        return;
+      }
+
+      const previewInfo = normalizeBedroomPreview(modelWrapper, rawBox, rawSize, rawCenter);
+      modelWrapper.object3D.updateMatrixWorld(true);
+      model.object3D.updateMatrixWorld(true);
+
+      const worldBox    = new THREE.Box3().setFromObject(model.object3D);
+      const worldSize   = worldBox.getSize(new THREE.Vector3());
+      const worldCenter = worldBox.getCenter(new THREE.Vector3());
+
+      if (!isValidBox(worldBox, worldSize)) {
+        console.warn('viewer: GLB has invalid world bounds after preview normalization — procedural fallback', {
+          url: BEDROOM_MODEL_URL,
+          preview: previewInfo
+        });
+        modelWrapper.remove();
+        activateBedroomFallback(roomEl, 'invalid-bounds', {
+          preview: previewInfo,
+          worldBounds: {
+            min: vecArray(worldBox.min),
+            max: vecArray(worldBox.max),
+            size: vecArray(worldSize)
+          }
+        });
+        return;
+      }
+
+      assetSource = BEDROOM_MODEL_LABEL;
+      applyFurnitureVisibilityToGLB(model);
+      addBedroomDebugHelpers(worldBox, worldCenter);
+      frameLoadedBedroomModel(worldBox, worldSize, worldCenter);
+      logBedroomModelDiagnostics(model, rawBox, rawSize, rawCenter, rawSphere, worldBox, worldSize, worldCenter, previewInfo);
+      updateHUD();
+      hideSpinner();
+    });
+
+    model.addEventListener('model-error', e => {
+      if (!model.isConnected) return;
+      console.warn('viewer: GLB failed to load — switching to procedural bedroom', {
+        url: BEDROOM_MODEL_URL,
+        detail: e.detail || null
+      });
+      modelWrapper.remove();
+      activateBedroomFallback(roomEl, 'load-failed', e.detail || null);
+    });
+
+    setTimeout(() => {
+      if (!model.isConnected) return;
+      const loaded = model.components?.['gltf-model']?.model;
+      if (!loaded) {
+        console.warn('viewer: GLB load timeout — switching to procedural bedroom', {
+          url: BEDROOM_MODEL_URL
+        });
+        model.dispatchEvent(new CustomEvent('model-error', {
+          detail: { reason: 'timeout', url: BEDROOM_MODEL_URL }
+        }));
+      }
+    }, 12000);
+
+  } else {
+    const isKnown = ROOM === 'living_room';
+    const msg = isKnown
+      ? 'Procedural preview — Infinigen asset unavailable for Living Room (see asset_manifest.json)'
+      : `Procedural preview — unrecognised room "${ROOM}"`;
+    showBanner(msg);
+
+    assetSource = isKnown
+      ? 'Procedural fallback (Infinigen blocked)'
+      : `Procedural fallback (unknown room)`;
+
+    buildLivingRoom(roomEl);
+    updateHUD();
+    hideSpinner();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// 11. Boot: wait for A-Frame scene ready before inserting entities
+// ─────────────────────────────────────────────────────────────────
+let sceneReady = false;
+
+const scene = document.querySelector('a-scene');
+if (scene.hasLoaded) {
+  sceneReady = true;
+  initScene();
+} else {
+  scene.addEventListener('loaded', () => { sceneReady = true; initScene(); }, { once: true });
+}
+
+// Collapsed by default when embedded in an iframe; expanded when standalone.
+setHudExpanded(window.self === window.top);
+
+// ─────────────────────────────────────────────────────────────────
+// 12. postMessage listener — live-param updates from index.html.
+//     Cached params are applied by iframe reload, not postMessage.
+// ─────────────────────────────────────────────────────────────────
+window.addEventListener('message', function (e) {
+  if (!sceneReady) return;
+  if (!e.data || e.data.type !== 'vrStudio:updateParams') return;
+  Object.assign(P, e.data.params);
+  applyParams();
+  updateHUD();
+});
+
+})();
+</script>
+
+</body>
+</html>

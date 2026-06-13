@@ -1,0 +1,22 @@
+# Blender / Infinigen heavy outputs
+*.blend
+*.blend1
+*.glb
+*.gltf
+*.bin
+renders/
+outputs/
+infinigen_out/
+
+# Allow selected runtime assets
+!renders/
+!renders/asset_manifest.json
+!renders/bedroom_parametric.glb
+!renders/living_room_shell.glb
+
+
+venv/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store

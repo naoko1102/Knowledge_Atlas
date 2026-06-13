@@ -1,0 +1,53 @@
+{
+  "room": "bedroom",
+  "source_blend": "/Users/naokoshibuya/Desktop/code/Knowledge_Atlas/160sp/track3/naoko-shibuya/renders/_infinigen_bedroom_default/scene.blend",
+  "output": "/Users/naokoshibuya/Desktop/code/Knowledge_Atlas/160sp/track3/naoko-shibuya/renders/bedroom_parametric.glb",
+  "params": {
+    "room_id": "bedroom",
+    "source_room": "bedroom_0/0",
+    "ceiling_height_m": 2.7,
+    "daylight_intensity": 0.45,
+    "wall_warmth_index": 0.6,
+    "brightness": 1.0,
+    "bed_size_scale": 1.0,
+    "pillow_count": 2,
+    "desk_enabled": true,
+    "plant_count": 1
+  },
+  "cleanup": {
+    "kept": [
+      "Bedroom_Parametric_Root",
+      "KA_PARAM_bed_frame",
+      "KA_PARAM_blanket",
+      "KA_PARAM_chair",
+      "KA_PARAM_chair_back",
+      "KA_PARAM_desk_leg",
+      "KA_PARAM_desk_leg.001",
+      "KA_PARAM_desk_leg.002",
+      "KA_PARAM_desk_leg.003",
+      "KA_PARAM_desk_top",
+      "KA_PARAM_mattress",
+      "KA_PARAM_nightstand",
+      "KA_PARAM_pillow_1",
+      "KA_PARAM_pillow_2",
+      "KA_PARAM_plant_leaf_1",
+      "KA_PARAM_plant_pot_1",
+      "KA_PARAM_room_brightness",
+      "bedroom_0/0.ceiling",
+      "bedroom_0/0.exterior",
+      "bedroom_0/0.floor",
+      "bedroom_0/0.wall"
+    ],
+    "removed_other_rooms": true,
+    "added_parametric_furniture": [
+      "bed",
+      "pillows",
+      "nightstand",
+      "desk",
+      "chair",
+      "plant",
+      "area_light"
+    ]
+  },
+  "aframe_ready": true
+}

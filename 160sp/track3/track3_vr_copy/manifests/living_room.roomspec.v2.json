@@ -1,0 +1,537 @@
+{
+  "room_type": "living_room",
+  "label": "Living Room",
+  "version": "2.0",
+
+  "sections": {
+
+    "geometry": [
+      {
+        "key": "room_length_m",
+        "label": "Room Length",
+        "type": "range",
+        "unit": "m",
+        "range": [3.5, 7.0],
+        "step": 0.5,
+        "default": 5.5,
+        "routing": "regeneration",
+        "construct": "perceived spaciousness / movement affordance",
+        "rationale": "Floor plan area is a primary determinant of perceived spaciousness. Longer rooms alter sightlines, furniture arrangement options, and sense of freedom versus confinement.",
+        "citation": "Evans (2003); Clements-Croome (2006)",
+        "infinigen_param": null
+      },
+      {
+        "key": "room_width_m",
+        "label": "Room Width",
+        "type": "range",
+        "unit": "m",
+        "range": [3.0, 5.5],
+        "step": 0.5,
+        "default": 4.5,
+        "routing": "regeneration",
+        "construct": "perceived spaciousness / enclosure",
+        "rationale": "Width relative to length controls the aspect ratio and degree of perceived enclosure. Narrow rooms increase enclosure; wider rooms increase perceived openness.",
+        "citation": "Evans (2003); Nasar (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "ceiling_height_m",
+        "label": "Ceiling Height",
+        "type": "range",
+        "unit": "m",
+        "range": [2.0, 3.5],
+        "step": 0.1,
+        "default": 2.7,
+        "routing": "regeneration",
+        "construct": "perceived openness / abstract cognition",
+        "rationale": "Higher ceilings prime abstract, expansive thinking; lower ceilings prime concrete, detail-focused thinking. The 2.0–3.5 m range spans below-standard to high-end residential. Default 2.7 m approximates the empirical preference peak reported by Vartanian et al.",
+        "citation": "Meyers-Levy & Zhu (2007); Vartanian et al. (2015)",
+        "infinigen_param": "ceiling_height_m"
+      }
+    ],
+
+    "windows": [
+      {
+        "key": "window_count",
+        "label": "Number of Windows",
+        "type": "integer",
+        "unit": "count",
+        "range": [1, 4],
+        "default": 2,
+        "routing": "regeneration",
+        "construct": "daylight access / view quality / restorative potential",
+        "rationale": "Window count affects both the total daylight admitted and the number of view opportunities. Views of the exterior—particularly nature—support attention restoration and stress reduction.",
+        "citation": "Kaplan (1993); Ulrich (1984); Heschong (1999)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_glazing_ratio",
+        "label": "Window-to-Wall Ratio",
+        "type": "range",
+        "unit": "ratio",
+        "range": [0.10, 0.40],
+        "step": 0.05,
+        "default": 0.20,
+        "routing": "regeneration",
+        "construct": "daylight factor / indoor luminance",
+        "rationale": "Glazing ratio is the primary architectural determinant of daylight factor. It interacts with daylight_intensity to determine the absolute illumination level reaching occupants.",
+        "citation": "Heschong (1999); Münch et al. (2020)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_sill_height_m",
+        "label": "Window Sill Height",
+        "type": "range",
+        "unit": "m",
+        "range": [0.6, 1.2],
+        "step": 0.1,
+        "default": 0.9,
+        "routing": "regeneration",
+        "construct": "seated view access",
+        "rationale": "Sill height determines whether occupants can see the exterior while seated. Lower sills provide unobstructed seated views; higher sills restrict views to standing occupants.",
+        "citation": "Kaplan (1993)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_treatment",
+        "label": "Window Treatment",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["none", "sheer", "curtains", "blinds"],
+        "default": "sheer",
+        "routing": "cached",
+        "construct": "daylight modulation / privacy / thermal comfort perception",
+        "rationale": "Window coverings modulate admitted daylight and signal privacy level. Sheer curtains diffuse glare while maintaining view. Heavy curtains increase enclosure and reduce stimulation. The choice also acts as a material warmth cue.",
+        "citation": "Münch et al. (2020); Ulrich (1991)",
+        "infinigen_param": null
+      },
+      {
+        "key": "window_view_type",
+        "label": "Exterior View Type",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["nature_garden", "urban_street", "interior_courtyard", "blank_wall"],
+        "default": "nature_garden",
+        "routing": "cached",
+        "construct": "restorative potential / stress recovery",
+        "rationale": "The content of a window view—independent of window size—is a strong predictor of stress recovery and attention restoration. Nature views consistently outperform built or obstructed views.",
+        "citation": "Ulrich (1984); Kaplan (1993); Kaplan & Kaplan (1989)",
+        "infinigen_param": null
+      }
+    ],
+
+    "doors": [
+      {
+        "key": "door_count",
+        "label": "Number of Doors",
+        "type": "integer",
+        "unit": "count",
+        "range": [1, 3],
+        "default": 1,
+        "routing": "regeneration",
+        "construct": "spatial connectivity / perceived escape affordance",
+        "rationale": "Door count and placement affect perceived connectivity between spaces, sense of privacy, and feeling of potential escape or openness—relevant to feelings of control and safety.",
+        "citation": "Gifford (2007)",
+        "infinigen_param": null
+      },
+      {
+        "key": "door_style",
+        "label": "Door Style",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["flush", "paneled", "glass_panel"],
+        "default": "paneled",
+        "routing": "cached",
+        "construct": "formality perception / visual weight",
+        "rationale": "Door style contributes to perceived formality and material richness of the interior. Glass-panel doors introduce borrowed light and visual connectivity; flush doors recede into walls.",
+        "citation": "Nasar (1994)",
+        "infinigen_param": null
+      }
+    ],
+
+    "lighting": [
+      {
+        "key": "daylight_intensity",
+        "label": "Daylight Intensity",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.05,
+        "default": 0.60,
+        "routing": "live",
+        "construct": "illumination / restoration / circadian entrainment",
+        "rationale": "Daylight exposure affects alertness, mood, restoration, and circadian regulation. Brighter daylight environments are associated with higher positive affect and improved cognitive performance in office and residential studies.",
+        "citation": "Kaplan & Kaplan (1989); Münch et al. (2020); Heschong (1999)",
+        "infinigen_param": "daylight_intensity"
+      },
+      {
+        "key": "artificial_light_intensity",
+        "label": "Artificial Light Intensity",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.05,
+        "default": 0.35,
+        "routing": "live",
+        "construct": "supplemental illumination / mood / perceived time-of-day",
+        "rationale": "Artificial lighting supplements daylight and is the primary light source in evening conditions. Higher intensity artificial light increases arousal and perceived energy level; lower intensity creates a more intimate atmosphere.",
+        "citation": "Knez (1995); van Duijnhoven et al. (2017)",
+        "infinigen_param": null
+      },
+      {
+        "key": "light_color_temperature_k",
+        "label": "Light Color Temperature",
+        "type": "range",
+        "unit": "K",
+        "range": [2700, 6500],
+        "step": 100,
+        "default": 3000,
+        "routing": "live",
+        "construct": "arousal / valence / circadian phase",
+        "rationale": "Warm light (2700–3000 K) is associated with relaxation, lower arousal, and evening-appropriate environments. Cool light (5000–6500 K) increases alertness, accuracy, and corresponds to midday daylight. This parameter controls the spectral character of both artificial and ambient sky colour.",
+        "citation": "Knez (1995); Küller et al. (2006); van Duijnhoven et al. (2017)",
+        "infinigen_param": null
+      },
+      {
+        "key": "primary_light_source",
+        "label": "Primary Light Source Type",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["ceiling_overhead", "floor_lamp", "table_lamp", "recessed", "mixed"],
+        "default": "mixed",
+        "routing": "cached",
+        "construct": "light distribution / perceived intimacy / vertical illumination ratio",
+        "rationale": "Light source type determines the distribution and directionality of illumination. Overhead lighting produces flat, even light; floor and table lamps create pools of warm light associated with intimacy and reduced visual fatigue.",
+        "citation": "Knez (1995); Veitch & Newsham (1998)",
+        "infinigen_param": null
+      },
+      {
+        "key": "shadow_softness",
+        "label": "Shadow Softness",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.1,
+        "default": 0.6,
+        "routing": "cached",
+        "construct": "perceived time-of-day / visual comfort",
+        "rationale": "Sharp shadows (low value) suggest direct, high-altitude sunlight or hard artificial sources. Soft shadows suggest diffuse overcast sky or softbox-style sources. Shadow character is a strong cue for perceived time of day and light quality.",
+        "citation": "Boyce et al. (2003)",
+        "infinigen_param": null
+      }
+    ],
+
+    "materials": [
+      {
+        "key": "wall_hue_deg",
+        "label": "Wall Colour Hue",
+        "type": "range",
+        "unit": "degrees",
+        "range": [0, 359],
+        "step": 5,
+        "default": 30,
+        "routing": "live",
+        "construct": "colour valence / arousal / affective response",
+        "rationale": "Hue is the strongest driver of colour-related emotional response. Blues and greens are associated with calm and restoration; yellows and reds with warmth and arousal. The full hue circle is exposed to support a wide range of experimental manipulations. Default 30° is a warm neutral (off-white/cream).",
+        "citation": "Kaya & Epps (2004); Valdez & Mehrabian (1994); Küller et al. (2006)",
+        "infinigen_param": null
+      },
+      {
+        "key": "wall_saturation",
+        "label": "Wall Colour Saturation",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 0.40],
+        "step": 0.02,
+        "default": 0.08,
+        "routing": "live",
+        "construct": "colour stimulation / visual fatigue",
+        "rationale": "Higher saturation amplifies the arousal potential of any hue. Highly saturated residential walls are unusual and visually fatiguing over extended exposure; desaturated walls are typical of calming residential interiors. Default 0.08 reflects common practice.",
+        "citation": "Küller et al. (2006); Valdez & Mehrabian (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "wall_value",
+        "label": "Wall Colour Lightness",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.50, 0.95],
+        "step": 0.05,
+        "default": 0.85,
+        "routing": "live",
+        "construct": "perceived brightness / spaciousness",
+        "rationale": "Lighter walls reflect more light, increase perceived brightness and spaciousness, and lower perceived enclosure. Dark walls reduce perceived room volume. This parameter interacts with daylight_intensity.",
+        "citation": "Stamps (1999); Nasar (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "floor_material",
+        "label": "Floor Material",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["hardwood_light", "hardwood_dark", "carpet_neutral", "carpet_warm", "tile_stone"],
+        "default": "hardwood_light",
+        "routing": "cached",
+        "construct": "warmth perception / acoustic comfort / formality / cleanliness perception",
+        "rationale": "Floor material is a dominant surface in any room and strongly shapes warmth, formality, and perceived hygiene. Carpet signals softness and acoustic comfort; hardwood signals formality and cleanliness; tile signals hard, cool surfaces.",
+        "citation": "Heydarian et al. (2015); Ulrich (1991)",
+        "infinigen_param": null
+      },
+      {
+        "key": "ceiling_material",
+        "label": "Ceiling Material",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["smooth_white", "off_white_textured", "wood_panel_light"],
+        "default": "smooth_white",
+        "routing": "cached",
+        "construct": "perceived height / formality / visual complexity",
+        "rationale": "Ceiling material affects perceived height through reflectance (smooth white maximises perceived height) and adds visual complexity. Exposed wood panels are associated with warmth and natural materials.",
+        "citation": "Stamps (1999)",
+        "infinigen_param": null
+      }
+    ],
+
+    "furniture": [
+      {
+        "key": "furniture_density",
+        "label": "Furniture Density",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.30, 0.85],
+        "step": 0.05,
+        "default": 0.50,
+        "routing": "cached",
+        "construct": "cognitive load / clutter / perceived spaciousness",
+        "rationale": "Furniture density is a proxy for the visual and navigational clutter of a room. Higher density increases perceived crowding and cognitive load; lower density increases perceived spaciousness but may signal emptiness or lack of comfort.",
+        "citation": "Roster & Ferrari (2020); Joye (2007)",
+        "infinigen_param": "furniture_fullness_pct"
+      },
+      {
+        "key": "seating_count",
+        "label": "Seating Count",
+        "type": "integer",
+        "unit": "count",
+        "range": [2, 8],
+        "default": 4,
+        "routing": "cached",
+        "construct": "social affordance / perceived social capacity",
+        "rationale": "The number of seats signals the intended social scale of a room—intimate (2–3) versus group/party (6–8). This affects perceived social affordance, privacy, and territorial density.",
+        "citation": "Hall (1966); Gifford (2007)",
+        "infinigen_param": null
+      },
+      {
+        "key": "furniture_arrangement",
+        "label": "Furniture Arrangement",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["conversational", "parallel_tv_facing", "dispersed", "l_shape"],
+        "default": "conversational",
+        "routing": "cached",
+        "construct": "social facilitation / attentional focus / territorial organisation",
+        "rationale": "Furniture arrangement determines whether the room primes face-to-face social interaction (conversational), media consumption (parallel_tv_facing), individual activity (dispersed), or a hybrid (l_shape). This is a primary determinant of social behaviour in experimental settings.",
+        "citation": "Hall (1966); Gifford (2007); Osmond (1957)",
+        "infinigen_param": null
+      },
+      {
+        "key": "sofa_style",
+        "label": "Sofa Style",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["modern_low", "traditional_upright", "sectional"],
+        "default": "modern_low",
+        "routing": "cached",
+        "construct": "perceived comfort / formality / social affordance",
+        "rationale": "Sofa style is the dominant furniture object in a living room and communicates both aesthetic register (modern vs. traditional) and comfort affordance. Low modern sofas signal informality; upright traditional sofas signal formality.",
+        "citation": "Gosling et al. (2002); Nasar (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "has_coffee_table",
+        "label": "Coffee Table Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": true,
+        "routing": "cached",
+        "construct": "proxemic anchoring / social affordance",
+        "rationale": "A coffee table anchors the seating arrangement and defines a proxemic centre. Its presence implies a more formalised social zone; its absence suggests a more open or casual space.",
+        "citation": "Hall (1966)",
+        "infinigen_param": null
+      },
+      {
+        "key": "has_bookshelf",
+        "label": "Bookshelf Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": true,
+        "routing": "cached",
+        "construct": "identity signalling / intellectual cue / visual complexity",
+        "rationale": "Bookshelves are a recognised marker of intellectual identity and openness to experience. Their presence changes inferences about the room's occupants and adds structured visual complexity.",
+        "citation": "Gosling et al. (2002); Nasar (1994)",
+        "infinigen_param": null
+      },
+      {
+        "key": "has_tv",
+        "label": "Television Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": true,
+        "routing": "cached",
+        "construct": "attentional focus / media affordance / furniture arrangement anchor",
+        "rationale": "A television is a dominant focal object in most living rooms and reshapes furniture arrangement, attentional direction, and the perceived primary activity of the space.",
+        "citation": "Kaplan & Kaplan (1989); Joye (2007)",
+        "infinigen_param": "has_tv"
+      },
+      {
+        "key": "clutter_index",
+        "label": "Clutter Level",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.05,
+        "default": 0.20,
+        "routing": "cached",
+        "construct": "cognitive load / chronic stress / restoration inhibition",
+        "rationale": "Household clutter is associated with elevated cortisol, reduced restoration, and impaired attentional recovery. This parameter controls the overall disorder of surfaces, floors, and furniture.",
+        "citation": "Roster & Ferrari (2020); Saxbe & Repetti (2010)",
+        "infinigen_param": null
+      }
+    ],
+
+    "plants": [
+      {
+        "key": "plant_count",
+        "label": "Plant Count",
+        "type": "integer",
+        "unit": "count",
+        "range": [0, 5],
+        "default": 1,
+        "routing": "cached",
+        "construct": "biophilic connection / attention restoration / stress reduction",
+        "rationale": "Indoor plants are a core biophilic design element. Exposure to indoor vegetation reduces physiological stress markers and supports attentional restoration. Even a single plant measurably shifts the biophilic character of a scene.",
+        "citation": "Ulrich (1984); Kaplan (1995); Joye (2007)",
+        "infinigen_param": null
+      },
+      {
+        "key": "plant_size_class",
+        "label": "Plant Size",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["none", "tabletop_small", "floor_medium", "floor_large"],
+        "default": "floor_medium",
+        "routing": "cached",
+        "construct": "biophilic visual salience / spatial volume occupied",
+        "rationale": "Larger plants command more visual attention and occupy more volume, increasing the biophilic signal strength of the room. Floor-standing plants also serve as spatial dividers.",
+        "citation": "Joye (2007); Kaplan (1995)",
+        "infinigen_param": null
+      },
+      {
+        "key": "plant_species_class",
+        "label": "Plant Species Type",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["tropical_leafy", "succulent_geometric", "flowering", "trailing_vine"],
+        "default": "tropical_leafy",
+        "routing": "cached",
+        "construct": "organic visual complexity / biophilic character",
+        "rationale": "Plant form affects the character of biophilic exposure. Tropical leafy plants provide high organic complexity and fractal-like form associated with attention restoration. Succulent geometric forms are lower complexity. Flowering plants add colour stimulation.",
+        "citation": "Joye (2007); Taylor et al. (2005) — fractal dimension of nature",
+        "infinigen_param": null
+      }
+    ],
+
+    "decoration": [
+      {
+        "key": "painting_count",
+        "label": "Painting / Art Count",
+        "type": "integer",
+        "unit": "count",
+        "range": [0, 4],
+        "default": 2,
+        "routing": "cached",
+        "construct": "visual complexity / aesthetic preference / identity signalling",
+        "rationale": "Wall art contributes to visual complexity and signals personality traits of the room's occupant. Multiple pieces increase overall visual complexity and provide focal objects for attentional dwell.",
+        "citation": "Gosling et al. (2002); Kaplan & Kaplan (1989)",
+        "infinigen_param": "painting_area_per_room_area"
+      },
+      {
+        "key": "painting_style",
+        "label": "Painting Style",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["landscape_nature", "abstract_geometric", "figurative_portrait", "none"],
+        "default": "landscape_nature",
+        "routing": "cached",
+        "construct": "restorative potential / aesthetic preference / content-specific affect",
+        "rationale": "Painting content has independent effects from painting quantity. Nature landscapes support restoration (Attention Restoration Theory). Abstract geometric art increases perceived modernity. Figurative portraits introduce social presence cues.",
+        "citation": "Kaplan (1995); Ulrich (1984); Berlyne (1960)",
+        "infinigen_param": null
+      },
+      {
+        "key": "painting_size_class",
+        "label": "Painting Size",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["small", "medium", "large_statement"],
+        "default": "medium",
+        "routing": "cached",
+        "construct": "visual salience / dominant focal object",
+        "rationale": "Large statement artworks function as architectural focal elements and dominate attentional capture. Smaller pieces are contextual. This interacts with painting_count to determine total wall art complexity.",
+        "citation": "Berlyne (1960)",
+        "infinigen_param": null
+      },
+      {
+        "key": "decoration_density",
+        "label": "Decoration Density",
+        "type": "range",
+        "unit": "normalised",
+        "range": [0.0, 1.0],
+        "step": 0.05,
+        "default": 0.35,
+        "routing": "cached",
+        "construct": "visual complexity / legibility / cognitive stimulation",
+        "rationale": "Berlyne's complexity–preference framework predicts an inverted-U relationship between visual complexity and aesthetic preference. Moderate decoration density is preferred; very low density reads as bare and cold; very high density reads as chaotic.",
+        "citation": "Berlyne (1960); Joye (2007)",
+        "infinigen_param": null
+      },
+      {
+        "key": "rug_present",
+        "label": "Rug Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": true,
+        "routing": "cached",
+        "construct": "zone definition / warmth cue / acoustic softness signal",
+        "rationale": "A rug anchors the seating zone visually, adds a warmth and softness cue independent of floor material, and signals acoustic comfort (sound dampening). Its presence or absence visibly changes the spatial organisation of the room.",
+        "citation": "Ulrich (1991)",
+        "infinigen_param": null
+      },
+      {
+        "key": "object_arrangement_order",
+        "label": "Object Arrangement Order",
+        "type": "categorical",
+        "unit": "category",
+        "options": ["neat", "moderate_disorder", "cluttered"],
+        "default": "neat",
+        "routing": "cached",
+        "construct": "perceived control / cognitive load / stress",
+        "rationale": "The orderliness of surfaces and objects is a driver of stress and perceived control. A cluttered, disordered environment impairs restoration; a neat environment signals control and organisation.",
+        "citation": "Saxbe & Repetti (2010); Roster & Ferrari (2020)",
+        "infinigen_param": null
+      },
+      {
+        "key": "mirror_present",
+        "label": "Mirror Present",
+        "type": "boolean",
+        "unit": "boolean",
+        "default": false,
+        "routing": "cached",
+        "construct": "perceived spaciousness / self-awareness / social presence",
+        "rationale": "Mirrors increase perceived room depth and spaciousness. They also increase self-focused attention, which can modulate social behaviour and self-evaluation in experimental contexts.",
+        "citation": "Stamps (1999); Duval & Wicklund (1972)",
+        "infinigen_param": null
+      }
+    ]
+
+  }
+}

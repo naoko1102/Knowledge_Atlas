@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VR Experiment Studio — COGS 160 Track 3</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg:         #f5f7fa;
+      --surface:    #ffffff;
+      --border:     #e2e6ea;
+      --text:       #1a202c;
+      --muted:      #6b7280;
+      --accent:     #2563eb;
+      --accent-lt:  #eff6ff;
+      --accent-bd:  #bfdbfe;
+      --ok-bg:      #f0fdf4; --ok-bd: #bbf7d0; --ok-fg: #166534;
+      --warn-bg:    #fff7ed; --warn-bd: #fed7aa; --warn-fg: #92400e;
+      --neu-bg:     #f8fafc; --neu-bd: #e2e8f0; --neu-fg: #475569;
+      --live-bg:    #dcfce7; --live-fg:   #15803d;
+      --cached-bg:  #dbeafe; --cached-fg: #1d4ed8;
+      --regen-bg:   #ffedd5; --regen-bd:  #fdba74; --regen-fg: #c2410c;
+      --r: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: system-ui, -apple-system, 'Segoe UI', Helvetica, sans-serif;
+      font-size: 14px; line-height: 1.6;
+    }
+
+    /* ── Two-panel layout ────────────────────────── */
+    .app-layout {
+      display: flex; height: 100vh; overflow: hidden;
+    }
+
+    .panel-left {
+      width: 440px; flex-shrink: 0;
+      overflow-y: auto;
+      background: var(--bg);
+      padding: 20px 18px 60px;
+      border-right: 1px solid var(--border);
+    }
+
+    .panel-right {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column;
+      background: #0d1117;
+    }
+
+    /* ── Right panel: header bar ─────────────────── */
+    .preview-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 14px;
+      background: #1e293b; border-bottom: 1px solid #334155;
+      flex-shrink: 0;
+    }
+    .preview-label { font-size: 12px; font-weight: 600; color: #94a3b8; }
+
+    .btn-popout {
+      padding: 4px 12px; border-radius: var(--r);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      background: transparent; color: #64748b;
+      border: 1px solid #334155;
+      transition: color 0.12s, border-color 0.12s;
+      white-space: nowrap;
+    }
+    .btn-popout:hover:not(:disabled) { color: #e2e8f0; border-color: #64748b; }
+    .btn-popout:disabled { opacity: 0.28; cursor: default; }
+
+    /* ── Right panel: placeholder ────────────────── */
+    .preview-placeholder {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: #334155; gap: 12px; text-align: center;
+      padding: 24px;
+    }
+    .preview-placeholder .pi-icon { font-size: 52px; line-height: 1; opacity: 0.4; }
+    .preview-placeholder p   { font-size: 14px; opacity: 0.6; }
+    .preview-placeholder small { font-size: 12px; opacity: 0.4; }
+
+    /* ── Right panel: iframe ─────────────────────── */
+    #preview-frame {
+      flex: 1; border: none; width: 100%;
+      display: none;
+    }
+
+    /* ── Header ──────────────────────────────────── */
+    .app-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px;
+      margin-bottom: 18px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-header h1   { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+    .app-header p    { color: var(--muted); font-size: 11px; }
+
+    /* ── Persist bar ─────────────────────────────── */
+    .persist-bar     { display: flex; gap: 7px; align-items: center; flex-shrink: 0; padding-top: 2px; }
+    .btn-persist {
+      display: inline-block;
+      padding: 5px 11px; border-radius: var(--r);
+      font-size: 11px; font-weight: 500; cursor: pointer;
+      white-space: nowrap;
+      background: var(--surface); color: var(--muted);
+      border: 1px solid var(--border);
+      transition: border-color 0.12s, color 0.12s;
+      text-align: center; line-height: 1.6;
+    }
+    .btn-persist:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn-persist:disabled { opacity: 0.38; cursor: default; }
+    .btn-persist input[type=file] { display: none; }
+
+    /* ── Shared: step label ──────────────────────── */
+    .step-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.09em; color: var(--muted); margin-bottom: 12px;
+    }
+
+    /* ── Shared: divider ─────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* ── Shared: badge ───────────────────────────── */
+    .badge {
+      display: inline-block; padding: 2px 7px; border-radius: 20px;
+      font-size: 10px; font-weight: 600; white-space: nowrap; line-height: 1.7;
+    }
+    .badge-live   { background: var(--live-bg);   color: var(--live-fg); }
+    .badge-cached { background: var(--cached-bg); color: var(--cached-fg); }
+    .badge-regen  { background: var(--regen-bg);  color: var(--regen-fg); }
+
+    /* ── Step 1: Room cards ──────────────────────── */
+    .room-cards { display: flex; gap: 12px; }
+    .room-card {
+      flex: 1; background: var(--surface);
+      border: 2px solid var(--border); border-radius: var(--r);
+      padding: 20px 14px; cursor: pointer; user-select: none;
+      text-align: center; transition: border-color 0.12s, background 0.12s;
+    }
+    .room-card:hover  { border-color: #93c5fd; }
+    .room-card.active { border-color: var(--accent); background: var(--accent-lt); }
+    .room-icon  { font-size: 32px; line-height: 1; margin-bottom: 8px; }
+    .room-name  { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .room-desc  { font-size: 11px; color: var(--muted); }
+
+    /* ── Step 2: Editing indicator ───────────────── */
+    .editing-banner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; margin-bottom: 12px;
+      background: var(--accent-lt); border: 1px solid var(--accent-bd);
+      border-left: 3px solid var(--accent); border-radius: var(--r); font-size: 12px;
+    }
+    .editing-banner .eb-who  { font-weight: 600; color: var(--accent); }
+    .editing-banner .eb-hint { font-size: 11px; color: var(--muted); }
+
+    /* ── Step 2: Legend ──────────────────────────── */
+    .legend {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 10px; padding: 9px 13px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); font-size: 11px; margin-bottom: 14px;
+    }
+    .legend-title { font-weight: 600; color: var(--muted); }
+    .legend-item  { display: flex; align-items: center; gap: 4px; color: var(--muted); }
+
+    /* ── Step 2: Param rows ──────────────────────── */
+    .param-row {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 13px 16px; margin-bottom: 8px;
+    }
+    .param-header { display: flex; align-items: center; gap: 7px; margin-bottom: 9px; }
+    .param-key    { font-weight: 600; font-size: 13px; }
+    .param-unit   { font-size: 10px; color: var(--muted); margin-left: auto; }
+    .param-desc   { font-size: 11px; color: var(--muted); margin-top: 7px; }
+
+    /* ── Regen note ──────────────────────────────── */
+    .regen-note {
+      margin-top: 8px; padding: 7px 11px;
+      background: var(--regen-bg); color: var(--regen-fg);
+      border: 1px solid var(--regen-bd); border-radius: var(--r);
+      font-size: 11px; font-weight: 500;
+    }
+
+    /* ── Step 2: Sliders ─────────────────────────── */
+    .slider-row  { display: flex; align-items: center; gap: 8px; }
+    .bound       { font-size: 10px; color: var(--muted); min-width: 28px; font-variant-numeric: tabular-nums; }
+    .bound.right { text-align: right; }
+    .slider-track { position: relative; flex: 1; }
+    .slider-track input[type=range] {
+      width: 100%; display: block; margin: 0; height: 20px;
+      accent-color: var(--accent); cursor: pointer;
+    }
+    .def-tick {
+      position: absolute; bottom: 1px; width: 2px; height: 7px;
+      background: #9ca3af; border-radius: 1px;
+      transform: translateX(-50%); pointer-events: none;
+    }
+    .val-out {
+      min-width: 44px; text-align: right; font-size: 12px; font-weight: 700;
+      font-variant-numeric: tabular-nums; color: var(--text);
+    }
+    .val-out.changed { color: var(--accent); }
+
+    /* ── Step 2: Boolean ─────────────────────────── */
+    .bool-row { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .bool-row input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+    .bool-val { font-size: 12px; font-weight: 700; }
+
+    /* ── Step 2: Categorical select ──────────────── */
+    .param-select {
+      width: 100%; padding: 7px 10px; border-radius: var(--r);
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text); font-size: 13px; cursor: pointer;
+      font-family: inherit;
+    }
+    .param-select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    /* ── Step 3: Experiment actions ──────────────── */
+    .exp-actions { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .btn-save-ctrl {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: var(--r); padding: 8px 16px;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-save-ctrl:hover { background: #1d4ed8; }
+    .btn-dup {
+      background: var(--surface); color: var(--accent);
+      border: 2px solid var(--accent); border-radius: var(--r);
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-dup:hover:not(:disabled) { background: var(--accent-lt); }
+    .btn-dup:disabled { opacity: 0.38; cursor: default; border-color: var(--border); color: var(--muted); }
+
+    /* ── Step 3: Condition cards ─────────────────── */
+    .conditions-row { display: flex; gap: 12px; align-items: flex-start; }
+    .cond-card {
+      flex: 0 0 calc(50% - 6px); max-width: calc(50% - 6px);
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: var(--r); padding: 13px 14px; transition: border-color 0.12s;
+    }
+    .cond-card.editing { border-color: var(--accent); }
+    .cond-card-header  {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .cond-title   { font-size: 12px; font-weight: 700; }
+    .editing-pill {
+      font-size: 10px; font-weight: 600; padding: 1px 8px;
+      background: var(--accent); color: #fff; border-radius: 20px;
+    }
+    .cond-params-list { margin-bottom: 12px; }
+    .cond-param-row   { display: flex; justify-content: space-between; padding: 2px 0; font-size: 11px; }
+    .cond-param-key   { color: var(--muted); }
+    .cond-param-val   { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); }
+    .cond-card-footer { display: flex; flex-direction: column; gap: 6px; }
+    .btn-cond-edit {
+      padding: 6px 10px; background: var(--bg); color: var(--text);
+      border: 1px solid var(--border); border-radius: var(--r);
+      font-size: 11px; font-weight: 500; cursor: pointer;
+      transition: border-color 0.12s, color 0.12s; text-align: center;
+    }
+    .btn-cond-edit:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-cond-launch {
+      padding: 6px 10px; background: var(--accent); color: #fff;
+      border: none; border-radius: var(--r);
+      font-size: 11px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s; text-align: center;
+    }
+    .btn-cond-launch:hover { background: #1d4ed8; }
+
+    /* ── Diff Viewer ─────────────────────────────── */
+    .diff-notice {
+      padding: 10px 14px; margin-bottom: 14px;
+      border-radius: var(--r); font-size: 12px;
+    }
+    .diff-notice strong   { font-weight: 700; }
+    .diff-notice-ok  { background: var(--ok-bg);  border: 1px solid var(--ok-bd);  color: var(--ok-fg); }
+    .diff-notice-warn{ background: var(--warn-bg); border: 1px solid var(--warn-bd);color: var(--warn-fg); }
+    .diff-notice-neu { background: var(--neu-bg);  border: 1px solid var(--neu-bd); color: var(--neu-fg); }
+    .diff-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden; font-size: 12px;
+    }
+    .diff-table th {
+      text-align: left; padding: 9px 13px; background: var(--bg);
+      color: var(--muted); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      border-bottom: 1px solid var(--border);
+    }
+    .diff-table td            { padding: 9px 13px; border-bottom: 1px solid var(--border); }
+    .diff-table tr:last-child td { border-bottom: none; }
+    .diff-row-changed td      { background: #f0f7ff; }
+    .diff-param-name          { font-weight: 500; }
+    .diff-val                 { font-variant-numeric: tabular-nums; }
+    .diff-val-hi              { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--accent); }
+    .diff-changed-badge {
+      display: inline-block; padding: 1px 7px; border-radius: 20px;
+      background: var(--accent-lt); color: var(--accent);
+      font-size: 10px; font-weight: 700;
+    }
+    .diff-unchanged { color: var(--muted); }
+
+    /* ── Restore toast ───────────────────────────── */
+    #restore-toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1e293b; color: #fff; padding: 10px 20px;
+      border-radius: 24px; font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
+      white-space: nowrap;
+    }
+    #restore-toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ── Left panel: editor ──────────────────────── -->
+  <div class="panel-left">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div>
+        <h1>VR Experiment Studio</h1>
+        <p>COGS 160 &middot; Track 3 &middot; Environmental Psychology in Virtual Interiors</p>
+      </div>
+      <div class="persist-bar">
+        <button class="btn-persist" id="dl-btn" onclick="downloadExperiment()" disabled>
+          &#x2193; Download JSON
+        </button>
+        <label class="btn-persist">
+          &#x2191; Upload JSON
+          <input type="file" accept=".json,application/json" onchange="uploadExperiment(this)">
+        </label>
+      </div>
+    </header>
+
+    <!-- Step 1: Room Picker -->
+    <section>
+      <div class="step-label">Step 1 &mdash; Select a Room</div>
+      <div class="room-cards">
+
+        <div class="room-card" data-room="living_room" onclick="selectRoom(this)">
+          <div class="room-icon">&#x1F6CB;</div>
+          <div class="room-name">Living Room</div>
+          <div class="room-desc">13 params &middot; Lighting, Materials, Plants&hellip;</div>
+        </div>
+
+        <div class="room-card" data-room="bedroom" onclick="selectRoom(this)">
+          <div class="room-icon">&#x1F6CF;</div>
+          <div class="room-name">Bedroom</div>
+          <div class="room-desc">14 params &middot; Sleep Env., Materials, Clutter&hellip;</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Step 2: Parameter Editor -->
+    <div id="editor" hidden>
+      <hr class="divider">
+      <section>
+        <div class="step-label">Step 2 &mdash; Edit Parameters</div>
+
+        <div id="editing-indicator" hidden>
+          <div class="editing-banner">
+            <span class="eb-who" id="editing-label">Editing: Control</span>
+            <span class="eb-hint">Changes update this condition live</span>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span class="legend-title">Update mode</span>
+          <span class="legend-item"><span class="badge badge-live">Live</span> Instant in preview</span>
+          <span class="legend-item"><span class="badge badge-cached">Cached</span> Reloads preview</span>
+          <span class="legend-item"><span class="badge badge-regen">Regen</span> Needs Infinigen</span>
+        </div>
+
+        <div id="param-list"></div>
+      </section>
+    </div>
+
+    <!-- Step 3: Experiment Builder -->
+    <div id="experiment-section" hidden>
+      <hr class="divider">
+      <section>
+        <div class="step-label">Step 3 &mdash; Experiment Builder</div>
+
+        <div class="exp-actions">
+          <button class="btn-save-ctrl" onclick="saveAsControl()">Save as Control</button>
+          <button class="btn-dup" id="dup-btn" onclick="duplicateAsTreatment()" disabled>
+            Duplicate as Treatment
+          </button>
+        </div>
+
+        <div class="conditions-row">
+
+          <div class="cond-card" id="ctrl-card" hidden>
+            <div class="cond-card-header">
+              <span class="cond-title">Control</span>
+              <span class="editing-pill" id="ctrl-pill" hidden>Editing</span>
+            </div>
+            <div class="cond-params-list" id="ctrl-params-list"></div>
+            <div class="cond-card-footer">
+              <button class="btn-cond-edit"   onclick="editCondition('control')">Edit &#x270E;</button>
+              <button class="btn-cond-launch" onclick="launchCondition('control')">Pop Out &#x2197;</button>
+            </div>
+          </div>
+
+          <div class="cond-card" id="trt-card" hidden>
+            <div class="cond-card-header">
+              <span class="cond-title">Treatment</span>
+              <span class="editing-pill" id="trt-pill" hidden>Editing</span>
+            </div>
+            <div class="cond-params-list" id="trt-params-list"></div>
+            <div class="cond-card-footer">
+              <button class="btn-cond-edit"   onclick="editCondition('treatment')">Edit &#x270E;</button>
+              <button class="btn-cond-launch" onclick="launchCondition('treatment')">Pop Out &#x2197;</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <!-- Diff Viewer -->
+    <div id="diff-section" hidden>
+      <hr class="divider">
+      <section>
+        <div class="step-label">Diff &mdash; Control vs Treatment</div>
+        <div id="diff-notice" hidden></div>
+        <table class="diff-table">
+          <thead>
+            <tr>
+              <th>Parameter</th><th>Control</th><th>Treatment</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="diff-body"></tbody>
+        </table>
+      </section>
+    </div>
+
+  </div><!-- /.panel-left -->
+
+  <!-- ── Right panel: A-Frame preview ────────────── -->
+  <div class="panel-right">
+
+    <div class="preview-header">
+      <span id="preview-label" class="preview-label">Live Preview</span>
+      <button class="btn-popout" id="popout-btn" onclick="popOutViewer()" disabled>
+        Pop Out Viewer &#x2197;
+      </button>
+    </div>
+
+    <div id="preview-placeholder" class="preview-placeholder">
+      <div class="pi-icon">&#x1F3E0;</div>
+      <p>Select a room to preview</p>
+      <small>A-Frame viewer will appear here</small>
+    </div>
+
+    <iframe id="preview-frame" src="" frameborder="0"
+            allow="pointer-lock; vr; xr-spatial-tracking"
+            allowfullscreen></iframe>
+
+  </div><!-- /.panel-right -->
+
+</div><!-- /.app-layout -->
+
+<!-- Restore toast -->
+<div id="restore-toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+// Room definitions
+// ─────────────────────────────────────────────────────────────────
+const ROOMS = {
+
+  living_room: {
+    label: 'Living Room',
+    params: [
+      // ── Tier A: original 6 ──────────────────────
+      {
+        key: 'daylight_intensity',          label: 'Daylight Intensity',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.60, step: 0.05,
+        unit: 'normalised', routing: 'live',
+        desc: 'Daylight contribution through windows. Affects restoration, alertness, and perceived environmental quality.'
+      },
+      {
+        key: 'wall_warmth_index',            label: 'Wall Warmth',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.50, step: 0.05,
+        unit: 'normalised', routing: 'live',
+        desc: '0 = cooler wall and material palette; 1 = warmer palette. Influences perceived comfort and stress response.'
+      },
+      {
+        key: 'furniture_fullness_pct',       label: 'Furniture Density',
+        type: 'range', min: 0.6, max: 0.9,  default: 0.75, step: 0.01,
+        unit: 'normalised', routing: 'cached',
+        desc: 'Amount of major furniture. Higher values increase visual clutter and cognitive load.'
+      },
+      {
+        key: 'painting_area_per_room_area',  label: 'Wall Decoration',
+        type: 'range', min: 1.0, max: 2.5,  default: 1.50, step: 0.10,
+        unit: 'area ratio', routing: 'cached',
+        desc: 'Amount of wall decoration relative to room area. Affects visual complexity and attention.'
+      },
+      {
+        key: 'has_tv',                       label: 'Television Present',
+        type: 'boolean', default: true,
+        unit: 'boolean', routing: 'cached',
+        desc: 'Whether a television is present as a focal media object. Changes attentional focus and social arrangement.'
+      },
+      {
+        key: 'ceiling_height_m',             label: 'Ceiling Height',
+        type: 'range', min: 2.0, max: 3.5,  default: 2.7, step: 0.1,
+        unit: 'm', routing: 'regeneration',
+        desc: 'Floor-to-ceiling clear height. Higher ceilings linked to abstract thinking and perceived openness.'
+      },
+      // ── Tier B: new parameters ──────────────────
+      {
+        key: 'artificial_light_intensity',   label: 'Artificial Light',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.35, step: 0.05,
+        unit: 'normalised', routing: 'live',
+        desc: 'Intensity of ceiling / lamp artificial lighting. Higher values increase arousal; lower values create an intimate atmosphere.'
+      },
+      {
+        key: 'light_color_temperature_k',    label: 'Light Color Temp.',
+        type: 'range', min: 2700, max: 6500, default: 3000, step: 100,
+        unit: 'K', routing: 'live',
+        desc: 'Light colour temperature. Warm (2700 K) supports relaxation; cool (6500 K) increases alertness and corresponds to daylight.'
+      },
+      {
+        key: 'window_treatment',             label: 'Window Treatment',
+        type: 'categorical',
+        options: ['none', 'sheer', 'curtains', 'blinds'],
+        default: 'sheer',
+        unit: 'category', routing: 'cached',
+        desc: 'Window covering type. Modulates admitted daylight, perceived privacy, and material warmth cue.'
+      },
+      {
+        key: 'window_view_type',             label: 'Exterior View',
+        type: 'categorical',
+        options: ['nature_garden', 'urban_street', 'interior_courtyard', 'blank_wall'],
+        default: 'nature_garden',
+        unit: 'category', routing: 'cached',
+        desc: 'Type of exterior view through windows. Nature views support attention restoration and stress recovery (Ulrich, 1984).'
+      },
+      {
+        key: 'floor_material',               label: 'Floor Material',
+        type: 'categorical',
+        options: ['hardwood_light', 'hardwood_dark', 'carpet_neutral', 'carpet_warm', 'tile_stone'],
+        default: 'hardwood_light',
+        unit: 'category', routing: 'cached',
+        desc: 'Primary floor surface. Carpet signals warmth and acoustic comfort; hardwood signals formality; tile signals cool hardness.'
+      },
+      {
+        key: 'plant_count',                  label: 'Plant Count',
+        type: 'range', min: 0, max: 5,       default: 1, step: 1,
+        unit: 'count', routing: 'cached',
+        desc: 'Number of indoor plants. Even one plant measurably increases biophilic character and supports attention restoration.'
+      },
+      {
+        key: 'clutter_index',                label: 'Clutter Level',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.20, step: 0.05,
+        unit: 'normalised', routing: 'cached',
+        desc: 'Degree of surface and floor disorder. Higher clutter is associated with elevated cortisol and impaired restoration.'
+      }
+    ]
+  },
+
+  bedroom: {
+    label: 'Bedroom',
+    params: [
+      // ── Tier A: original 6 ──────────────────────
+      {
+        key: 'daylight_intensity',           label: 'Daylight Intensity',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.45, step: 0.05,
+        unit: 'normalised', routing: 'live',
+        desc: 'Daylight contribution through windows. Affects circadian regulation and sleep-related comfort.'
+      },
+      {
+        key: 'wall_warmth_index',            label: 'Wall Warmth',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.60, step: 0.05,
+        unit: 'normalised', routing: 'live',
+        desc: '0 = cooler wall and material palette; 1 = warmer palette. Warmer cues support perceived softness and calmness.'
+      },
+      {
+        key: 'has_desk',                    label: 'Desk Present',
+        type: 'boolean', default: false,
+        unit: 'boolean', routing: 'cached',
+        desc: 'Whether the bedroom includes a work desk. Desks can introduce work cues into a sleep environment and affect pre-sleep arousal.'
+      },
+      {
+        key: 'bed_size_scale',               label: 'Bed Scale',
+        type: 'range', min: 0.8, max: 1.2,  default: 1.00, step: 0.05,
+        unit: 'scale factor', routing: 'cached',
+        desc: 'Scale factor applied to bed and mattress dimensions. Affects perceived spaciousness and restorative affordance.'
+      },
+      {
+        key: 'pillow_count',                 label: 'Pillow Count',
+        type: 'range', min: 2, max: 3,      default: 2, step: 1,
+        unit: 'count', routing: 'cached',
+        desc: 'Number of visible pillows on the bed. A softness and comfort cue.'
+      },
+      {
+        key: 'ceiling_height_m',             label: 'Ceiling Height',
+        type: 'range', min: 2.0, max: 3.5,  default: 2.7, step: 0.1,
+        unit: 'm', routing: 'regeneration',
+        desc: 'Floor-to-ceiling clear height. Linked to perceived openness and abstract cognition.'
+      },
+      // ── Tier B: new parameters ──────────────────
+      {
+        key: 'artificial_light_intensity',   label: 'Artificial Light',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.25, step: 0.05,
+        unit: 'normalised', routing: 'live',
+        desc: 'Evening artificial light intensity. Above ~10 lux suppresses melatonin; dim light supports sleep preparation.'
+      },
+      {
+        key: 'light_color_temperature_k',    label: 'Light Color Temp.',
+        type: 'range', min: 1800, max: 4000, default: 2700, step: 100,
+        unit: 'K', routing: 'live',
+        desc: 'Light colour temperature. Restricted to warm range (1800–4000 K). Warm light minimises melatonin suppression.'
+      },
+      {
+        key: 'window_treatment',             label: 'Window Treatment',
+        type: 'categorical',
+        options: ['none', 'sheer', 'curtains', 'blackout'],
+        default: 'blackout',
+        unit: 'category', routing: 'cached',
+        desc: 'Window covering type. Blackout is recommended for sleep hygiene; compare against sheer to test light-at-night effects.'
+      },
+      {
+        key: 'window_view_type',             label: 'Exterior View',
+        type: 'categorical',
+        options: ['nature_garden', 'urban_street', 'interior_courtyard', 'blank_wall'],
+        default: 'nature_garden',
+        unit: 'category', routing: 'cached',
+        desc: 'First visual input on waking. Nature views support restorative morning affect.'
+      },
+      {
+        key: 'floor_material',               label: 'Floor Material',
+        type: 'categorical',
+        options: ['carpet_soft', 'carpet_plush', 'hardwood_light', 'hardwood_dark', 'laminate'],
+        default: 'carpet_soft',
+        unit: 'category', routing: 'cached',
+        desc: 'Floor surface material. Soft carpet provides a tactile warmth cue on waking; hard floors are associated with less restful environments.'
+      },
+      {
+        key: 'nightlight_present',          label: 'Night Light Present',
+        type: 'boolean', default: false,
+        unit: 'boolean', routing: 'cached',
+        desc: 'Whether a night light is present. Night lights provide orientation but introduce light-at-night exposure.'
+      },
+      {
+        key: 'nightstand_count',             label: 'Nightstand Count',
+        type: 'range', min: 0, max: 2,       default: 1, step: 1,
+        unit: 'count', routing: 'cached',
+        desc: 'Number of nightstands beside the bed. This signals occupancy, bedtime routines, and functional affordance.'
+      },
+      {
+        key: 'clutter_index',                label: 'Clutter Level',
+        type: 'range', min: 0.0, max: 1.0,  default: 0.15, step: 0.05,
+        unit: 'normalised', routing: 'cached',
+        desc: 'Degree of surface and floor disorder. Bedroom clutter specifically linked to sleep quality impairment via chronic stress.'
+      }
+    ]
+  }
+
+};
+
+const BADGE = {
+  live:         { text: 'Live',    cls: 'badge-live'   },
+  cached:       { text: 'Cached',  cls: 'badge-cached' },
+  regeneration: { text: 'Regen',   cls: 'badge-regen'  }
+};
+
+// ─────────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────────
+let activeRoomKey   = null;
+let activeCondition = null;
+let values          = {};
+let experiment      = { control: null, treatment: null };
+
+// ─────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────
+function fmt(def, val) {
+  if (def.type === 'boolean')     return val ? 'Yes' : 'No';
+  if (def.type === 'categorical') return String(val).replace(/_/g, ' ');
+  if (def.step >= 1)              return String(Math.round(val));
+  return Number(val).toFixed(2);
+}
+
+function formatOption(s) {
+  return s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function copyParams(src) { return Object.assign({}, src); }
+
+function defaultParams(room) {
+  const out = {};
+  room.params.forEach(def => { out[def.key] = def.default; });
+  return out;
+}
+
+function mergeKnownParams(room, src) {
+  const out = defaultParams(room);
+  if (!src) return out;
+  room.params.forEach(def => {
+    if (Object.prototype.hasOwnProperty.call(src, def.key)) {
+      out[def.key] = src[def.key];
+    }
+  });
+  return out;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Persistence
+// ─────────────────────────────────────────────────────────────────
+const STORAGE_KEY  = 'vr_studio_experiment';
+const SAVE_VERSION = '1.0';
+
+function buildSaveData() {
+  return {
+    version:         SAVE_VERSION,
+    savedAt:         new Date().toISOString(),
+    roomKey:         activeRoomKey,
+    activeCondition: activeCondition,
+    values:          copyParams(values),
+    experiment: {
+      control:   experiment.control   ? { params: copyParams(experiment.control.params) }   : null,
+      treatment: experiment.treatment ? { params: copyParams(experiment.treatment.params) } : null
+    }
+  };
+}
+
+function saveToStorage() {
+  if (!activeRoomKey) return;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(buildSaveData())); }
+  catch (e) { console.warn('vr-studio: localStorage write failed', e); }
+}
+
+function restoreState(data, showToast) {
+  if (!data || data.version !== SAVE_VERSION) return false;
+  if (!ROOMS[data.roomKey]) return false;
+
+  activeRoomKey = data.roomKey;
+
+  const room = ROOMS[activeRoomKey];
+  values = mergeKnownParams(room, data.values);
+
+  experiment = {
+    control: data.experiment?.control
+      ? { params: mergeKnownParams(room, data.experiment.control.params) }
+      : null,
+    treatment: data.experiment?.treatment
+      ? { params: mergeKnownParams(room, data.experiment.treatment.params) }
+      : null
+  };
+
+  activeCondition = data.activeCondition || null;
+  if (activeCondition && !experiment[activeCondition]) {
+    activeCondition = experiment.control ? 'control' : null;
+  }
+
+  document.querySelectorAll('.room-card').forEach(c =>
+    c.classList.toggle('active', c.dataset.room === activeRoomKey));
+
+  document.getElementById('editor').hidden             = false;
+  document.getElementById('experiment-section').hidden = false;
+
+  renderParams(room);
+  setEditingIndicator(activeCondition);
+  syncExperimentUI();
+  renderDiff();
+  setIframeSrc();
+
+  if (showToast) {
+    const when = data.savedAt ? new Date(data.savedAt).toLocaleTimeString() : 'unknown time';
+    showRestoreToast('Experiment restored from ' + when);
+  }
+
+  return true;
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    restoreState(JSON.parse(raw), true);
+  } catch (e) {
+    console.warn('vr-studio: localStorage restore failed', e);
+  }
+}
+
+function downloadExperiment() {
+  if (!activeRoomKey) return;
+  const data = buildSaveData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const date = new Date().toISOString().slice(0, 10);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `experiment_${activeRoomKey}_${date}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function uploadExperiment(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      const ok   = restoreState(data, false);
+      if (ok) {
+        saveToStorage();
+        showRestoreToast('Experiment loaded from ' + file.name);
+      } else {
+        alert('Could not load experiment: unsupported version or missing room type.');
+      }
+    } catch (err) {
+      alert('Invalid JSON file: ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function showRestoreToast(msg) {
+  const t = document.getElementById('restore-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// iframe preview
+// ─────────────────────────────────────────────────────────────────
+function getViewerURL(roomKey, params, label) {
+  return `aframe/viewer.html?room=${roomKey}` +
+         `&label=${encodeURIComponent(label || 'Preview')}` +
+         `&params=${btoa(JSON.stringify(params))}`;
+}
+
+function setIframeSrc() {
+  if (!activeRoomKey) return;
+  const frame = document.getElementById('preview-frame');
+  const ph    = document.getElementById('preview-placeholder');
+  const label = activeCondition
+    ? (activeCondition === 'control' ? 'Control' : 'Treatment')
+    : 'Preview';
+  frame.src             = getViewerURL(activeRoomKey, values, label);
+  frame.style.display   = 'block';
+  ph.style.display      = 'none';
+  document.getElementById('popout-btn').disabled = false;
+  updatePreviewLabel();
+}
+
+function sendToFrame(params) {
+  const frame = document.getElementById('preview-frame');
+  if (!frame.contentWindow || !activeRoomKey) return;
+  frame.contentWindow.postMessage(
+    { type: 'vrStudio:updateParams', params },
+    window.location.origin
+  );
+}
+
+let _reloadTimer = null;
+function scheduleFrameReload() {
+  clearTimeout(_reloadTimer);
+  _reloadTimer = setTimeout(setIframeSrc, 300);
+}
+
+function popOutViewer() {
+  if (!activeRoomKey) return;
+  const label = activeCondition
+    ? (activeCondition === 'control' ? 'Control' : 'Treatment')
+    : 'Preview';
+  window.open(getViewerURL(activeRoomKey, values, label), '_blank');
+}
+
+function updatePreviewLabel() {
+  const el = document.getElementById('preview-label');
+  if (!activeRoomKey) { el.textContent = 'Live Preview'; return; }
+  const room = ROOMS[activeRoomKey].label;
+  if (!activeCondition) { el.textContent = 'Live Preview · ' + room; return; }
+  const cond = activeCondition === 'control' ? 'Control' : 'Treatment';
+  el.textContent = 'Editing ' + cond + ' · ' + room;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 1 — Room selection
+// ─────────────────────────────────────────────────────────────────
+function selectRoom(card) {
+  document.querySelectorAll('.room-card').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+
+  activeRoomKey   = card.dataset.room;
+  activeCondition = null;
+  experiment      = { control: null, treatment: null };
+
+  const room = ROOMS[activeRoomKey];
+  values = defaultParams(room);
+
+  renderParams(room);
+  setEditingIndicator(null);
+
+  document.getElementById('editor').hidden             = false;
+  document.getElementById('experiment-section').hidden = false;
+  document.getElementById('diff-section').hidden       = true;
+
+  syncExperimentUI();
+  setIframeSrc();
+  saveToStorage();
+  document.getElementById('editor').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 2 — Parameter rendering
+// ─────────────────────────────────────────────────────────────────
+function renderParams(room) {
+  document.getElementById('param-list').innerHTML =
+    room.params.map(renderParamRow).join('');
+}
+
+function renderParamRow(def) {
+  const b   = BADGE[def.routing];
+  const val = values[def.key];
+  const pid = 'p_' + def.key;
+
+  if (def.type === 'boolean') {
+    return `
+      <div class="param-row">
+        <div class="param-header">
+          <span class="param-key">${def.label}</span>
+          <span class="badge ${b.cls}">${b.text}</span>
+          <span class="param-unit">${def.unit}</span>
+        </div>
+        <label class="bool-row">
+          <input type="checkbox" id="${pid}" ${val ? 'checked' : ''}
+                 onchange="updateBool('${def.key}', this.checked)">
+          <span class="bool-val" id="${pid}_v">${val ? 'Yes' : 'No'}</span>
+        </label>
+        <p class="param-desc">${def.desc}</p>
+      </div>`;
+  }
+
+  if (def.type === 'categorical') {
+    const opts = def.options.map(o =>
+      `<option value="${o}"${val === o ? ' selected' : ''}>${formatOption(o)}</option>`
+    ).join('');
+    return `
+      <div class="param-row">
+        <div class="param-header">
+          <span class="param-key">${def.label}</span>
+          <span class="badge ${b.cls}">${b.text}</span>
+          <span class="param-unit">${def.unit}</span>
+        </div>
+        <select class="param-select" id="${pid}"
+                onchange="updateSelect('${def.key}', this.value)">
+          ${opts}
+        </select>
+        <p class="param-desc">${def.desc}</p>
+      </div>`;
+  }
+
+  const defPct  = ((def.default - def.min) / (def.max - def.min) * 100).toFixed(2);
+  const changed = (val !== def.default);
+  const regenNote = def.routing === 'regeneration'
+    ? `<div class="regen-note" id="rnote_${def.key}" hidden>
+         Preview not updated &mdash; ${def.label} requires Infinigen regeneration to change geometry.
+       </div>`
+    : '';
+
+  return `
+    <div class="param-row">
+      <div class="param-header">
+        <span class="param-key">${def.label}</span>
+        <span class="badge ${b.cls}">${b.text}</span>
+        <span class="param-unit">${def.unit}</span>
+      </div>
+      <div class="slider-row">
+        <span class="bound">${def.min}</span>
+        <div class="slider-track">
+          <input type="range" id="${pid}"
+                 min="${def.min}" max="${def.max}" step="${def.step}" value="${val}"
+                 oninput="updateRange('${def.key}', this.value)">
+          <div class="def-tick" style="left:${defPct}%" title="Default: ${def.default}"></div>
+        </div>
+        <span class="bound right">${def.max}</span>
+        <span class="val-out${changed ? ' changed' : ''}" id="${pid}_v">${fmt(def, val)}</span>
+      </div>
+      <p class="param-desc">${def.desc}</p>
+      ${regenNote}
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 2 — Update handlers
+// ─────────────────────────────────────────────────────────────────
+function updateRange(key, rawVal) {
+  const def = ROOMS[activeRoomKey].params.find(p => p.key === key);
+  const val = (def.step === 1) ? parseInt(rawVal, 10) : parseFloat(rawVal);
+  values[key] = val;
+
+  if (activeCondition && experiment[activeCondition]) {
+    experiment[activeCondition].params[key] = val;
+    refreshConditionCard(activeCondition);
+  }
+
+  const out = document.getElementById('p_' + key + '_v');
+  if (out) {
+    out.textContent = fmt(def, val);
+    out.className   = 'val-out' + (val !== def.default ? ' changed' : '');
+  }
+
+  if (def.routing === 'live') {
+    sendToFrame(values);
+  } else if (def.routing === 'cached') {
+    scheduleFrameReload();
+  } else if (def.routing === 'regeneration') {
+    const note = document.getElementById('rnote_' + key);
+    if (note) note.hidden = false;
+  }
+
+  renderDiff();
+  saveToStorage();
+}
+
+function updateSelect(key, val) {
+  const def = ROOMS[activeRoomKey].params.find(p => p.key === key);
+  values[key] = val;
+
+  if (activeCondition && experiment[activeCondition]) {
+    experiment[activeCondition].params[key] = val;
+    refreshConditionCard(activeCondition);
+  }
+
+  if (def.routing === 'live') {
+    sendToFrame(values);
+  } else if (def.routing === 'cached') {
+    scheduleFrameReload();
+  }
+
+  renderDiff();
+  saveToStorage();
+}
+
+function updateBool(key, checked) {
+  const def = ROOMS[activeRoomKey].params.find(p => p.key === key);
+  values[key] = checked;
+
+  if (activeCondition && experiment[activeCondition]) {
+    experiment[activeCondition].params[key] = checked;
+    refreshConditionCard(activeCondition);
+  }
+
+  const out = document.getElementById('p_' + key + '_v');
+  if (out) out.textContent = checked ? 'Yes' : 'No';
+
+  if (def.routing === 'live') {
+    sendToFrame(values);
+  } else if (def.routing === 'cached') {
+    scheduleFrameReload();
+  }
+
+  renderDiff();
+  saveToStorage();
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 2 — Editing indicator
+// ─────────────────────────────────────────────────────────────────
+function setEditingIndicator(which) {
+  const ind = document.getElementById('editing-indicator');
+  const lbl = document.getElementById('editing-label');
+  if (!which) { ind.hidden = true; return; }
+  lbl.textContent = 'Editing: ' + (which === 'control' ? 'Control' : 'Treatment');
+  ind.hidden = false;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 3 — Save as Control
+// ─────────────────────────────────────────────────────────────────
+function saveAsControl() {
+  if (!activeRoomKey) return;
+  experiment.control = { params: copyParams(values) };
+  activeCondition    = 'control';
+  setEditingIndicator('control');
+  syncExperimentUI();
+  renderDiff();
+  saveToStorage();
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 3 — Duplicate Control as Treatment
+// ─────────────────────────────────────────────────────────────────
+function duplicateAsTreatment() {
+  if (!experiment.control) return;
+  experiment.treatment = { params: copyParams(experiment.control.params) };
+  activeCondition      = 'treatment';
+  values = copyParams(experiment.treatment.params);
+  renderParams(ROOMS[activeRoomKey]);
+  setEditingIndicator('treatment');
+  syncExperimentUI();
+  renderDiff();
+  setIframeSrc();
+  saveToStorage();
+  document.getElementById('diff-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 3 — Switch active editing condition
+// ─────────────────────────────────────────────────────────────────
+function editCondition(which) {
+  if (!experiment[which]) return;
+  activeCondition = which;
+  values = copyParams(experiment[which].params);
+  renderParams(ROOMS[activeRoomKey]);
+  setEditingIndicator(which);
+  syncExperimentUI();
+  setIframeSrc();
+  saveToStorage();
+  document.getElementById('editor').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 3 — Sync condition cards and button states
+// ─────────────────────────────────────────────────────────────────
+function syncExperimentUI() {
+  document.getElementById('dup-btn').disabled = !experiment.control;
+  document.getElementById('dl-btn').disabled  = !activeRoomKey;
+
+  const ctrlCard = document.getElementById('ctrl-card');
+  if (experiment.control) {
+    ctrlCard.hidden = false;
+    ctrlCard.classList.toggle('editing', activeCondition === 'control');
+    document.getElementById('ctrl-pill').hidden = (activeCondition !== 'control');
+    renderConditionCardParams('ctrl-params-list', experiment.control.params);
+  } else {
+    ctrlCard.hidden = true;
+  }
+
+  const trtCard = document.getElementById('trt-card');
+  if (experiment.treatment) {
+    trtCard.hidden = false;
+    trtCard.classList.toggle('editing', activeCondition === 'treatment');
+    document.getElementById('trt-pill').hidden = (activeCondition !== 'treatment');
+    renderConditionCardParams('trt-params-list', experiment.treatment.params);
+  } else {
+    trtCard.hidden = true;
+  }
+
+  updatePreviewLabel();
+}
+
+function renderConditionCardParams(containerId, params) {
+  const room = ROOMS[activeRoomKey];
+  document.getElementById(containerId).innerHTML =
+    room.params.map(def => `
+      <div class="cond-param-row">
+        <span class="cond-param-key">${def.label}</span>
+        <span class="cond-param-val">${fmt(def, params[def.key])}</span>
+      </div>`
+    ).join('');
+}
+
+function refreshConditionCard(which) {
+  if (!experiment[which]) return;
+  renderConditionCardParams(
+    (which === 'control' ? 'ctrl' : 'trt') + '-params-list',
+    experiment[which].params
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Step 3 — Pop out condition in full A-Frame tab
+// ─────────────────────────────────────────────────────────────────
+function launchCondition(which) {
+  if (!experiment[which]) return;
+  const label = which === 'control' ? 'Control' : 'Treatment';
+  window.open(getViewerURL(activeRoomKey, experiment[which].params, label), '_blank');
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Diff Viewer
+// ─────────────────────────────────────────────────────────────────
+function renderDiff() {
+  const section = document.getElementById('diff-section');
+  if (!experiment.control || !experiment.treatment) { section.hidden = true; return; }
+  section.hidden = false;
+
+  const room = ROOMS[activeRoomKey];
+  const cp   = experiment.control.params;
+  const tp   = experiment.treatment.params;
+
+  const rows = room.params.map(def => ({
+    def, cv: cp[def.key], tv: tp[def.key],
+    changed: cp[def.key] !== tp[def.key]
+  }));
+
+  const n = rows.filter(r => r.changed).length;
+
+  const notice = document.getElementById('diff-notice');
+  notice.hidden = false;
+  if (n === 0) {
+    notice.className = 'diff-notice diff-notice-neu';
+    notice.innerHTML = '<strong>No changes detected.</strong> Treatment is identical to Control.';
+  } else if (n === 1) {
+    notice.className = 'diff-notice diff-notice-ok';
+    notice.innerHTML = '<strong>1 parameter changed.</strong> No confounds detected.';
+  } else {
+    notice.className = 'diff-notice diff-notice-warn';
+    notice.innerHTML =
+      `<strong>&#x26A0;&#xFE0F; Possible confound:</strong> ${n} parameters differ. ` +
+      `For clean causal inference, change only one variable at a time.`;
+  }
+
+  document.getElementById('diff-body').innerHTML = rows.map(({ def, cv, tv, changed }) => `
+    <tr class="${changed ? 'diff-row-changed' : ''}">
+      <td class="diff-param-name">${def.label}</td>
+      <td class="diff-val">${fmt(def, cv)}</td>
+      <td class="${changed ? 'diff-val-hi' : 'diff-val'}">${fmt(def, tv)}</td>
+      <td>${changed
+        ? '<span class="diff-changed-badge">Changed</span>'
+        : '<span class="diff-unchanged">&mdash;</span>'}</td>
+    </tr>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Boot — restore from localStorage on load
+// ─────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', loadFromStorage);
+</script>
+</body>
+</html>
